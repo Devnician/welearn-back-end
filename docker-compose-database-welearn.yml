@@ -11,9 +11,9 @@ services:
     networks:
       - "welearn_network"
     environment:
-      - "MYSQL_USER=test"
-      - "MYSQL_PASSWORD=test"
-      - "MYSQL_ROOT_PASSWORD=test"
+      - "MYSQL_USER=welearn"
+      - "MYSQL_PASSWORD=welearn"
+      - "MYSQL_ROOT_PASSWORD=welearn"
       - "MYSQL_DATABASE=welearn"
     ports:
       - "3306:3306"
