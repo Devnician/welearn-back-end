@@ -1,5 +1,6 @@
 package uni.ruse.welearn.welearn.util;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -29,10 +30,12 @@ public class AuditedClass {
     @Column(name = "creation_date", updatable = false)
     @Temporal(TemporalType.TIMESTAMP)
     @CreatedDate
+    @JsonIgnore
     private Date creationDate;
 
     @Column(name = "modified_date")
     @LastModifiedDate
     @Temporal(TemporalType.TIMESTAMP)
+    @JsonIgnore
     private Date modifiedDate;
 }

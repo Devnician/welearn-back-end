@@ -63,7 +63,7 @@ public class User extends AuditedClass {
     @ManyToMany(mappedBy = "blacklist")
     @LazyCollection(LazyCollectionOption.FALSE)
     @JsonManagedReference
-    private Set<Event> event;
+    private Set<Event> blacklistedEvents;
 
     @Override
     public String toString() {
