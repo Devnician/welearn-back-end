@@ -4,6 +4,12 @@ target/
 !**/src/main/**/target/
 !**/src/test/**/target/
 
+data/databaseExport.txt
+
+### STS ###
+mvnw
+mvnw.cmd
+
 ### STS ###
 .apt_generated
 .classpath
