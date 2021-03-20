@@ -7,16 +7,21 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 import uni.ruse.welearn.welearn.util.AuditedClass;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import java.sql.Time;
+import java.util.Set;
 
 /**
  * @author Ivelin Dimitrov
@@ -44,12 +49,14 @@ public class Schedule extends AuditedClass {
     private Group group;
 
     @OneToOne(cascade = CascadeType.DETACH)
-    @JoinColumn(name = "day_id", referencedColumnName = "id")
-    private Day day;
-
-    @OneToOne(cascade = CascadeType.DETACH)
     @JoinColumn(name = "discipline_id", referencedColumnName = "id")
     private Discipline discipline;
+
+    @OneToMany(mappedBy = "schedule", fetch = FetchType.LAZY)
+    @JsonManagedReference
+    @LazyCollection(LazyCollectionOption.FALSE)
+    private Set<Resource> resources;
+
 
     @Override
     public String toString() {
@@ -57,7 +64,6 @@ public class Schedule extends AuditedClass {
                 "id='" + id + '\'' +
                 ", startTime=" + startTime +
                 ", endTime=" + endTime +
-                ", dayMapping=" + day +
                 ", disciplineMapping=" + discipline +
                 '}';
     }

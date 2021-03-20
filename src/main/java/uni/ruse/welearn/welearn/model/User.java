@@ -10,18 +10,22 @@ import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
-import uni.ruse.welearn.welearn.enums.Role;
+import org.springframework.beans.BeanUtils;
+import uni.ruse.welearn.welearn.model.dto.UserRequestDto;
+import uni.ruse.welearn.welearn.repository.RoleRepository;
 import uni.ruse.welearn.welearn.util.AuditedClass;
+import uni.ruse.welearn.welearn.util.WeLearnException;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
+import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -46,6 +50,9 @@ public class User extends AuditedClass {
     private String lastName;
     private String username;
     private String password;
+    @Column(columnDefinition = "integer default 0")
+    private int loggedIn;
+    private int deleted;
 
     @ManyToOne
     @JoinColumn(name = "group_id")
@@ -57,7 +64,9 @@ public class User extends AuditedClass {
     @LazyCollection(LazyCollectionOption.FALSE)
     private Set<EvaluationMark> evaluationMarks;
 
-    @Enumerated(EnumType.STRING)
+    @OneToOne
+    @JoinColumn(name = "role_id")
+    @JsonManagedReference
     private Role role;
 
     @ManyToMany(mappedBy = "blacklist")
@@ -65,17 +74,13 @@ public class User extends AuditedClass {
     @JsonManagedReference
     private Set<Event> blacklistedEvents;
 
-    @Override
-    public String toString() {
-        return "\nUser{" +
-                "userId='" + userId + '\'' +
-                ", email='" + email + '\'' +
-                ", firstName='" + firstName + '\'' +
-                ", lastName='" + lastName + '\'' +
-                ", username='" + username + '\'' +
-                ", password='" + password + '\'' +
-                ", evaluationMarks=" + evaluationMarks +
-                ", role=" + role +
-                '}';
+    public User(UserRequestDto userRequestDto, RoleRepository roleRepository) throws WeLearnException {
+        Optional<Role> role = roleRepository.findById(userRequestDto.getRoleId());
+        if (role.isPresent()) {
+            BeanUtils.copyProperties(userRequestDto, this);
+            this.setRole(role.get());
+        } else {
+            throw new WeLearnException("Role is not found");
+        }
     }
 }

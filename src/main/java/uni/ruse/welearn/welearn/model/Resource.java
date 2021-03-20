@@ -1,5 +1,6 @@
 package uni.ruse.welearn.welearn.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -41,6 +42,17 @@ public class Resource extends AuditedClass {
     @JoinColumn(name = "group_id")
     @JsonManagedReference
     private Group group;
+
+    @ManyToOne
+    @JoinColumn(name = "discipline_id")
+    @JsonBackReference
+    private Discipline discipline;
+
+    @ManyToOne
+    @JoinColumn(name = "schedule_id")
+    @JsonBackReference
+    private Schedule schedule;
+
 
     @Override
     public String toString() {
