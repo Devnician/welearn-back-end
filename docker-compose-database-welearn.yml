@@ -16,5 +16,5 @@ services:
       - "MYSQL_ROOT_PASSWORD=welearn"
       - "MYSQL_DATABASE=welearn"
     ports:
-      - "3306:3306"
+      - "3307:3306"
     restart: always

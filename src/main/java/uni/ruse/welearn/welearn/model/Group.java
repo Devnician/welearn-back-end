@@ -15,6 +15,7 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import java.sql.Timestamp;
 import java.util.Set;
@@ -43,6 +44,11 @@ public class Group extends AuditedClass {
     @JsonBackReference
     @LazyCollection(LazyCollectionOption.FALSE)
     private Set<Event> events;
+
+    @ManyToMany(mappedBy = "group", fetch = FetchType.LAZY)
+    @JsonBackReference
+    @LazyCollection(LazyCollectionOption.FALSE)
+    private Set<Discipline> disciplines;
 
     @OneToMany(mappedBy = "group", fetch = FetchType.LAZY)
     @JsonBackReference
