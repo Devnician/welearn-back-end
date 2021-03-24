@@ -56,15 +56,4 @@ public class Schedule extends AuditedClass {
     @JsonManagedReference
     @LazyCollection(LazyCollectionOption.FALSE)
     private Set<Resource> resources;
-
-
-    @Override
-    public String toString() {
-        return "\nSchedule{" +
-                "id='" + id + '\'' +
-                ", startTime=" + startTime +
-                ", endTime=" + endTime +
-                ", disciplineMapping=" + discipline +
-                '}';
-    }
 }

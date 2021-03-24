@@ -11,10 +11,8 @@ import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 import org.springframework.beans.BeanUtils;
-import uni.ruse.welearn.welearn.model.dto.UserRequestDto;
-import uni.ruse.welearn.welearn.repository.RoleRepository;
+import uni.ruse.welearn.welearn.model.dto.UserDto;
 import uni.ruse.welearn.welearn.util.AuditedClass;
-import uni.ruse.welearn.welearn.util.WeLearnException;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -25,7 +23,6 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
-import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -50,6 +47,10 @@ public class User extends AuditedClass {
     private String lastName;
     private String username;
     private String password;
+    private String address;
+    private String birthdate;
+    private String phoneNumber;
+    private String middleName;
     @Column(columnDefinition = "integer default 0")
     private int loggedIn;
     private int deleted;
@@ -74,13 +75,17 @@ public class User extends AuditedClass {
     @JsonManagedReference
     private Set<Event> blacklistedEvents;
 
-    public User(UserRequestDto userRequestDto, RoleRepository roleRepository) throws WeLearnException {
-        Optional<Role> role = roleRepository.findById(userRequestDto.getRoleId());
-        if (role.isPresent()) {
-            BeanUtils.copyProperties(userRequestDto, this);
-            this.setRole(role.get());
-        } else {
-            throw new WeLearnException("Role is not found");
-        }
+    @OneToOne
+    @JoinColumn(name = "teacher_id")
+    @JsonBackReference
+    private Discipline taughtDiscipline;
+
+    @OneToOne
+    @JoinColumn(name = "assistant_id")
+    @JsonBackReference
+    private Discipline assistedDiscipline;
+
+    public User(UserDto userDto) {
+        BeanUtils.copyProperties(userDto, this);
     }
 }

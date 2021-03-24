@@ -53,15 +53,4 @@ public class Resource extends AuditedClass {
     @JsonBackReference
     private Schedule schedule;
 
-
-    @Override
-    public String toString() {
-        return "\nResource{" +
-                "resourceId='" + resourceId + '\'' +
-                ", name='" + name + '\'' +
-                ", type='" + type + '\'' +
-                ", dirPath='" + dirPath + '\'' +
-                ", accessibleAll=" + accessibleAll +
-                '}';
-    }
 }

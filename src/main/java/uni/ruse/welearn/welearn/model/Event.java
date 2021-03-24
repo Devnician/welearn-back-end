@@ -59,14 +59,4 @@ public class Event extends AuditedClass {
     @LazyCollection(LazyCollectionOption.FALSE)
     private Set<User> blacklist;
 
-    @Override
-    public String toString() {
-        return "\nEvent{" +
-                "eventId='" + eventId + '\'' +
-                ", startDate=" + startDate +
-                ", endDate=" + endDate +
-                ", type='" + type + '\'' +
-                ", blacklist=" + blacklist +
-                '}';
-    }
 }

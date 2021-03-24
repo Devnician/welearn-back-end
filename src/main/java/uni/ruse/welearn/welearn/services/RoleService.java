@@ -1,6 +1,3 @@
-/**
- *
- */
 package uni.ruse.welearn.welearn.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,10 +13,10 @@ import java.util.Optional;
  * retrieving information.
  *
  * @author petar ivanov
- *
  */
 @Service(value = "roleService")
 public class RoleService {
+
     @Autowired
     private RoleRepository roleRepository;
 
@@ -39,8 +36,7 @@ public class RoleService {
      * @return Roles
      */
     public List<Role> findAllRoles() {
-        List<Role> roles = roleRepository.findAll();
-        return roles;
+        return roleRepository.findAll();
     }
 
     /**
@@ -65,7 +61,7 @@ public class RoleService {
      */
     public Role findRoleById(long id) {
         Optional<Role> optionalRole = roleRepository.findById(id);
-        return optionalRole.isPresent() ? optionalRole.get() : null;
+        return optionalRole.orElse(null);
     }
 
     /**

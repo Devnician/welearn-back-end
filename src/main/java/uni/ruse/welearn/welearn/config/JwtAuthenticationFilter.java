@@ -3,6 +3,7 @@ package uni.ruse.welearn.welearn.config;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.SignatureException;
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -33,6 +34,7 @@ import static uni.ruse.welearn.welearn.util.Constants.USER_ID;
  *
  * @author petar ivanov
  */
+@Slf4j
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Autowired
     private UserService userService;
@@ -74,7 +76,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     if (user.getRole().getId() != roleId || !user.getUsername().equals(username)) {
                         username = null;
                         // userService.kickUser(user);
-                        System.out.println("This token is not on this user..");
+                        log.info("This token is not on this user..");
                         res.sendError(HttpServletResponse.SC_BAD_REQUEST);
                         return;
                     }
@@ -82,7 +84,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             } catch (IllegalArgumentException e) {
                 logger.error("an error occured during getting username from token", e);
             } catch (ExpiredJwtException e) {
-                System.out.println("Expired, than logout...");
+                log.info("Expired, than logout...");
                 // userService.kickUser(user);
                 logger.warn("the token is expired and not valid anymore", e);
             } catch (SignatureException e) {
@@ -100,7 +102,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 logger.info("authenticated user " + username + ", setting security context");
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             } else {
-                System.out.println("LOGOUT FROM HERE --- user: " + username);
+                log.info("LOGOUT FROM HERE --- user: " + username);
             }
         }
         chain.doFilter(req, res);

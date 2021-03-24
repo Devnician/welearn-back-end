@@ -1,6 +1,7 @@
 package uni.ruse.welearn.welearn.controller;
 
 import io.micrometer.core.instrument.util.StringUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -26,6 +27,7 @@ import uni.ruse.welearn.welearn.util.JwtTokenUtil;
 @CrossOrigin(maxAge = 3600)
 @RestController
 @RequestMapping("/token")
+@Slf4j
 public class AuthenticationController {
     @Autowired
     private AuthenticationManager authenticationManager;
@@ -65,7 +67,7 @@ public class AuthenticationController {
             return new ApiResponse<>(HttpStatus.OK.value(), "wrong_user", null);
         } else {
             if (user.getDeleted() == 1) {
-                System.out.println("Account is deleted. Please, contact with administrator.");
+                log.info("Account is deleted. Please, contact with administrator.");
                 return new ApiResponse<>(HttpStatus.OK.value(), "deleted", null);
             }
 
@@ -77,7 +79,7 @@ public class AuthenticationController {
                 return new ApiResponse<>(HttpStatus.OK.value(), "wrong_pass", null);
             } else {
                 if (user.getLoggedIn() == 1 && StringUtils.isNotBlank(user.getUserId())) {// someone logged in this account
-                    System.out.println("ADMIN IN DEBUG");
+                    log.info("ADMIN IN DEBUG");
                     return new ApiResponse<>(HttpStatus.OK.value(), "logged", null);
                 }
             }
@@ -89,7 +91,7 @@ public class AuthenticationController {
 
         final String token = jwtTokenUtil.generateToken(user, role);
 
-        System.out.println("token sent for USER: " + user.getUserId() + " with role: " + role.getRole());
+        log.info("token sent for USER: " + user.getUserId() + " with role: " + role.getRole());
 
         userService.login(user);
 

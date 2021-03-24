@@ -50,11 +50,4 @@ public class EvaluationMark extends AuditedClass {
     @JsonManagedReference
     private User user;
 
-    @Override
-    public String toString() {
-        return "EvaluationMark{" +
-                "id='" + id + '\'' +
-                ", markValue=" + markValue +
-                '}';
-    }
 }

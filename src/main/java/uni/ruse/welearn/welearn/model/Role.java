@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
+import org.springframework.beans.BeanUtils;
+import uni.ruse.welearn.welearn.model.dto.RoleDto;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -13,8 +15,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 /**
- * Model for role that conatins labels and transient List with
- * {@link MenuToRoles}
+ * Model for role that conatins labels and transient List with permissions
  *
  * @author petar ivanov
  */
@@ -43,4 +44,10 @@ public class Role {
     private String description;
 
     private String descriptionBg;
+
+    private String permissions;
+
+    public Role(RoleDto roleDto) {
+        BeanUtils.copyProperties(roleDto, this);
+    }
 }

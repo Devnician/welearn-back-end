@@ -9,6 +9,8 @@ import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
+import org.springframework.beans.BeanUtils;
+import uni.ruse.welearn.welearn.model.dto.GroupDto;
 import uni.ruse.welearn.welearn.util.AuditedClass;
 
 import javax.persistence.Entity;
@@ -68,18 +70,7 @@ public class Group extends AuditedClass {
     private Timestamp startDate;
     private Timestamp endDate;
 
-    @Override
-    public String toString() {
-        return "Group{" +
-                "users=" + users +
-                ", schedules=" + schedules +
-                ", events=" + events +
-                ", groupId='" + groupId + '\'' +
-                ", name='" + name + '\'' +
-                ", description='" + description + '\'' +
-                ", maxResourcesMb=" + maxResourcesMb +
-                ", startDate=" + startDate +
-                ", endDate=" + endDate +
-                '}';
+    public Group(GroupDto groupDto) {
+        BeanUtils.copyProperties(groupDto, this);
     }
 }
