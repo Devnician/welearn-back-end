@@ -35,8 +35,11 @@ public class EvaluationMarkService {
         return evaluationMarkRepository.findAll();
     }
 
-    public EvaluationMark save(EvaluationMark evaluationMark) {
-        return evaluationMarkRepository.save(evaluationMark);
+    public EvaluationMark save(EvaluationMark evaluationMark) throws WeLearnException {
+        if (evaluationMark.getId().isBlank()) {
+            return evaluationMarkRepository.save(evaluationMark);
+        }
+        throw new WeLearnException("New EvaluationMark object cannot have an id");
     }
 
     public EvaluationMark edit(EvaluationMark evaluationMark) throws WeLearnException {

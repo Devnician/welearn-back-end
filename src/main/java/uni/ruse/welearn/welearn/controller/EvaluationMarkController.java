@@ -48,7 +48,7 @@ public class EvaluationMarkController {
     @PostMapping
     public ApiResponse<EvaluationMarkDto> createMark(
             @RequestBody EvaluationMarkDto evaluationMarkDto
-    ) {
+    ) throws WeLearnException {
         return new ApiResponse<>(HttpStatus.OK.value(), "Mark saved successfully",
                 new EvaluationMarkDto(evaluationMarkService.save(new EvaluationMark(evaluationMarkDto))));
     }

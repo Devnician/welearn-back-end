@@ -7,6 +7,7 @@ import uni.ruse.welearn.welearn.model.Group;
 import uni.ruse.welearn.welearn.repository.GroupRepository;
 import uni.ruse.welearn.welearn.util.WeLearnException;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -21,9 +22,40 @@ public class GroupService {
 
     public Group findOne(String groupId) throws WeLearnException {
         Optional<Group> group = groupRepository.findById(groupId);
-        if(group.isEmpty()){
+        if (group.isEmpty()) {
             throw new WeLearnException("Group with id " + groupId + " not found.");
         }
         return group.get();
+    }
+
+    public List<Group> findAll() {
+        return groupRepository.findAll();
+    }
+
+    public Group save(Group group) throws WeLearnException {
+        if (group.getGroupId().isBlank()) {
+            return groupRepository.save(group);
+        }
+        throw new WeLearnException("New Group object cannot have an id");
+    }
+
+    public Group edit(Group group) throws WeLearnException {
+        Group existingGroup = findOne(group.getGroupId());
+        existingGroup.setDescription(group.getDescription());
+        existingGroup.setStartDate(group.getStartDate());
+        existingGroup.setEndDate(group.getEndDate());
+        existingGroup.setDisciplines(group.getDisciplines());
+        existingGroup.setEvents(group.getEvents());
+        existingGroup.setName(group.getName());
+        existingGroup.setMaxResourcesMb(group.getMaxResourcesMb());
+        existingGroup.setResources(group.getResources());
+        existingGroup.setSchedules(group.getSchedules());
+        existingGroup.setUsers(group.getUsers());
+        return groupRepository.save(existingGroup);
+    }
+
+    public void delete(String id) throws WeLearnException {
+        Group group = findOne(id);
+        groupRepository.delete(group);
     }
 }
