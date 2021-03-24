@@ -1,5 +1,6 @@
 package uni.ruse.welearn.welearn.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -19,9 +20,10 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * @author Ivelin Dimitrov
@@ -44,26 +46,31 @@ public class Discipline extends AuditedClass {
     private String name;
 
     @OneToMany(mappedBy = "discipline", fetch = FetchType.EAGER)
-    @JsonManagedReference
     @LazyCollection(LazyCollectionOption.FALSE)
+    @JsonManagedReference
     private Set<Resource> resources;
 
     @ManyToMany
-    @JoinColumn(name = "group_id")
     @JsonManagedReference
+    @JoinColumn(name = "group_id")
     private Set<Group> group;
 
-    @OneToOne
-    @JoinColumn(name = "user_id")
-    @JsonManagedReference
+    @ManyToOne
+    @JsonBackReference
+    @JoinColumn(name = "teacher_id")
     private User teacher;
 
-    @OneToOne
+    @ManyToOne
+    @JsonBackReference
     @JoinColumn(name = "assistant_id")
-    @JsonManagedReference
     private User assistant;
 
     public Discipline(DisciplineDto disciplineResponseDto) {
-        BeanUtils.copyProperties(disciplineResponseDto, this);
+        if (disciplineResponseDto != null) {
+            BeanUtils.copyProperties(disciplineResponseDto, this);
+            resources = disciplineResponseDto.getResources().stream().map(Resource::new).collect(Collectors.toSet());
+            teacher = new User(disciplineResponseDto.getTeacher());
+            assistant = new User(disciplineResponseDto.getAssistant());
+        }
     }
 }

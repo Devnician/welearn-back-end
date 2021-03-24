@@ -1,5 +1,6 @@
 package uni.ruse.welearn.welearn.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,6 +10,8 @@ import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
+import org.springframework.beans.BeanUtils;
+import uni.ruse.welearn.welearn.model.dto.ScheduleDto;
 import uni.ruse.welearn.welearn.util.AuditedClass;
 
 import javax.persistence.CascadeType;
@@ -22,6 +25,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import java.sql.Time;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * @author Ivelin Dimitrov
@@ -45,15 +49,25 @@ public class Schedule extends AuditedClass {
 
     @ManyToOne
     @JoinColumn(name = "group_id")
-    @JsonManagedReference
+    @JsonBackReference
     private Group group;
 
     @OneToOne(cascade = CascadeType.DETACH)
+    @JsonBackReference
     @JoinColumn(name = "discipline_id", referencedColumnName = "id")
     private Discipline discipline;
 
     @OneToMany(mappedBy = "schedule", fetch = FetchType.LAZY)
-    @JsonManagedReference
     @LazyCollection(LazyCollectionOption.FALSE)
+    @JsonManagedReference
     private Set<Resource> resources;
+
+    public Schedule(ScheduleDto scheduleDto) {
+        if (scheduleDto != null) {
+            BeanUtils.copyProperties(scheduleDto, this);
+            group = new Group(scheduleDto.getGroup());
+            discipline = new Discipline(scheduleDto.getDiscipline());
+            resources = scheduleDto.getResources().stream().map(Resource::new).collect(Collectors.toSet());
+        }
+    }
 }

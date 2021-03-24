@@ -10,6 +10,8 @@ import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
+import org.springframework.beans.BeanUtils;
+import uni.ruse.welearn.welearn.model.dto.EventDto;
 import uni.ruse.welearn.welearn.util.AuditedClass;
 
 import javax.persistence.Entity;
@@ -21,6 +23,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import java.sql.Timestamp;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * @author Ivelin Dimitrov
@@ -46,7 +49,7 @@ public class Event extends AuditedClass {
 
     @ManyToOne
     @JoinColumn(name = "group_id")
-    @JsonManagedReference
+    @JsonBackReference
     private Group group;
 
     @ManyToMany
@@ -55,8 +58,15 @@ public class Event extends AuditedClass {
             joinColumns = @JoinColumn(name = "event_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id")
     )
-    @JsonBackReference
     @LazyCollection(LazyCollectionOption.FALSE)
+    @JsonManagedReference
     private Set<User> blacklist;
 
+    public Event(EventDto eventDto) {
+        if (eventDto != null) {
+            BeanUtils.copyProperties(eventDto, this);
+            group = new Group(eventDto.getGroup());
+            blacklist = eventDto.getBlacklist().stream().map(User::new).collect(Collectors.toSet());
+        }
+    }
 }

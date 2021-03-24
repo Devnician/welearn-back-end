@@ -1,6 +1,6 @@
 package uni.ruse.welearn.welearn.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -21,6 +21,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import java.sql.Timestamp;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * @author Ivelin Dimitrov
@@ -33,28 +34,28 @@ import java.util.Set;
 @Builder
 public class Group extends AuditedClass {
     @OneToMany(mappedBy = "group", fetch = FetchType.EAGER)
-    @JsonBackReference
     @LazyCollection(LazyCollectionOption.FALSE)
+    @JsonManagedReference
     private Set<User> users;
 
     @OneToMany(mappedBy = "group", fetch = FetchType.EAGER)
-    @JsonBackReference
     @LazyCollection(LazyCollectionOption.FALSE)
+    @JsonManagedReference
     private Set<Schedule> schedules;
 
     @OneToMany(mappedBy = "group", fetch = FetchType.LAZY)
-    @JsonBackReference
     @LazyCollection(LazyCollectionOption.FALSE)
+    @JsonManagedReference
     private Set<Event> events;
 
     @ManyToMany(mappedBy = "group", fetch = FetchType.LAZY)
-    @JsonBackReference
     @LazyCollection(LazyCollectionOption.FALSE)
+    @JsonManagedReference
     private Set<Discipline> disciplines;
 
     @OneToMany(mappedBy = "group", fetch = FetchType.LAZY)
-    @JsonBackReference
     @LazyCollection(LazyCollectionOption.FALSE)
+    @JsonManagedReference
     private Set<Resource> resources;
 
     @Id
@@ -71,6 +72,13 @@ public class Group extends AuditedClass {
     private Timestamp endDate;
 
     public Group(GroupDto groupDto) {
-        BeanUtils.copyProperties(groupDto, this);
+        if (groupDto != null) {
+            BeanUtils.copyProperties(groupDto, this);
+            resources = groupDto.getResources().stream().map(Resource::new).collect(Collectors.toSet());
+            disciplines = groupDto.getDisciplines().stream().map(Discipline::new).collect(Collectors.toSet());
+            events = groupDto.getEvents().stream().map(Event::new).collect(Collectors.toSet());
+            schedules = groupDto.getSchedules().stream().map(Schedule::new).collect(Collectors.toSet());
+            users = groupDto.getUsers().stream().map(User::new).collect(Collectors.toSet());
+        }
     }
 }

@@ -1,5 +1,6 @@
 package uni.ruse.welearn.welearn.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,7 +13,10 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Model for role that conatins labels and transient List with permissions
@@ -47,7 +51,14 @@ public class Role {
 
     private String permissions;
 
+    @OneToMany(mappedBy = "role")
+    @JsonManagedReference
+    private Set<User> user;
+
     public Role(RoleDto roleDto) {
-        BeanUtils.copyProperties(roleDto, this);
+        if (roleDto != null) {
+            BeanUtils.copyProperties(roleDto, this);
+            user = roleDto.getUser().stream().map(User::new).collect(Collectors.toSet());
+        }
     }
 }

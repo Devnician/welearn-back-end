@@ -1,6 +1,7 @@
 package uni.ruse.welearn.welearn.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -16,14 +17,14 @@ import uni.ruse.welearn.welearn.util.AuditedClass;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * @author Ivelin Dimitrov
@@ -57,35 +58,41 @@ public class User extends AuditedClass {
 
     @ManyToOne
     @JoinColumn(name = "group_id")
-    @JsonManagedReference
+    @JsonBackReference
     private Group group;
 
     @OneToMany(mappedBy = "user")
-    @JsonBackReference
     @LazyCollection(LazyCollectionOption.FALSE)
+    @JsonManagedReference
     private Set<EvaluationMark> evaluationMarks;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "role_id")
-    @JsonManagedReference
+    @JsonBackReference
     private Role role;
 
-    @ManyToMany(mappedBy = "blacklist")
+//    @ManyToMany(mappedBy = "blacklist")
+//    @LazyCollection(LazyCollectionOption.FALSE)
+//    private Set<Event> blacklistedEvents;
+
+    @OneToMany(mappedBy = "teacher", fetch = FetchType.LAZY)
     @LazyCollection(LazyCollectionOption.FALSE)
     @JsonManagedReference
-    private Set<Event> blacklistedEvents;
+    private Set<Discipline> taughtDiscipline;
 
-    @OneToOne
-    @JoinColumn(name = "teacher_id")
-    @JsonBackReference
-    private Discipline taughtDiscipline;
-
-    @OneToOne
-    @JoinColumn(name = "assistant_id")
-    @JsonBackReference
-    private Discipline assistedDiscipline;
+    @OneToMany(mappedBy = "assistant", fetch = FetchType.LAZY)
+    @LazyCollection(LazyCollectionOption.FALSE)
+    @JsonManagedReference
+    private Set<Discipline> assistedDiscipline;
 
     public User(UserDto userDto) {
-        BeanUtils.copyProperties(userDto, this);
+        if (userDto != null) {
+            BeanUtils.copyProperties(userDto, this);
+            role = new Role(userDto.getRole());
+            group = new Group(userDto.getGroup());
+            evaluationMarks = userDto.getEvaluationMarks().stream().map(EvaluationMark::new).collect(Collectors.toSet());
+            taughtDiscipline = userDto.getTaughtDiscipline().stream().map(Discipline::new).collect(Collectors.toSet());
+            assistedDiscipline = userDto.getAssistedDiscipline().stream().map(Discipline::new).collect(Collectors.toSet());
+        }
     }
 }

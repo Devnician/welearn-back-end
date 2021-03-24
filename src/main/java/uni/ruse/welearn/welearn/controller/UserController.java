@@ -42,9 +42,9 @@ public class UserController {
      * @param user {@link User}
      * @return {@link User}
      */
-    @PostMapping
+    @PostMapping(consumes = "application/json", produces = "application/json")
     public ApiResponse<UserDto> saveUser(@RequestBody UserDto user) throws WeLearnException {
-        return new ApiResponse<>(HttpStatus.OK.value(), "User added successfully", obscurePassword(new UserDto(userService.addUser(new User(user)))));
+        return new ApiResponse<>(HttpStatus.OK.value(), "User added successfully", new UserDto(userService.addUser(new User(user))));
     }
 
     /**
@@ -55,7 +55,7 @@ public class UserController {
     @GetMapping
     public ApiResponse<List<UserDto>> listUser() {
         return new ApiResponse<>(HttpStatus.OK.value(), "User list fetched successfully.",
-                userService.findAllUsers().stream().map(UserDto::new).map(UserController::obscurePassword).collect(Collectors.toList()));
+                userService.findAllUsers().stream().map(UserDto::new).collect(Collectors.toList()));
     }
 
     /**
@@ -68,7 +68,7 @@ public class UserController {
     public ApiResponse<UserDto> logout(
             @PathVariable String id
     ) throws WeLearnException {
-        return new ApiResponse<>(HttpStatus.OK.value(), "Logged out successfully.", obscurePassword(new UserDto(userService.logout(id))));
+        return new ApiResponse<>(HttpStatus.OK.value(), "Logged out successfully.", new UserDto(userService.logout(id)));
     }
 
 
@@ -76,18 +76,14 @@ public class UserController {
     public ApiResponse<UserDto> updateUser(
             @RequestBody UserDto userDto
     ) throws WeLearnException {
-        return new ApiResponse<>(HttpStatus.OK.value(), "User updated successfully.", obscurePassword(new UserDto(userService.updateUser(new User(userDto)))));
+        return new ApiResponse<>(HttpStatus.OK.value(), "User updated successfully.", new UserDto(userService.updateUser(new User(userDto))));
     }
 
     @DeleteMapping("/{customer-id}")
     public ApiResponse<UserDto> deleteUser(
             @PathVariable String customerId
     ) throws WeLearnException {
-        return new ApiResponse<>(HttpStatus.OK.value(), "User deleted successfully", obscurePassword(new UserDto(userService.deleteUser(customerId))));
+        return new ApiResponse<>(HttpStatus.OK.value(), "User deleted successfully", new UserDto(userService.deleteUser(customerId)));
     }
 
-    private static UserDto obscurePassword(UserDto userDto) {
-        userDto.setPassword(null);
-        return userDto;
-    }
 }

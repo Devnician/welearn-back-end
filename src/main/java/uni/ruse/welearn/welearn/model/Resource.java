@@ -1,13 +1,14 @@
 package uni.ruse.welearn.welearn.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
+import org.springframework.beans.BeanUtils;
+import uni.ruse.welearn.welearn.model.dto.ResourceDto;
 import uni.ruse.welearn.welearn.util.AuditedClass;
 
 import javax.persistence.Entity;
@@ -40,7 +41,7 @@ public class Resource extends AuditedClass {
 
     @ManyToOne
     @JoinColumn(name = "group_id")
-    @JsonManagedReference
+    @JsonBackReference
     private Group group;
 
     @ManyToOne
@@ -53,4 +54,12 @@ public class Resource extends AuditedClass {
     @JsonBackReference
     private Schedule schedule;
 
+    public Resource(ResourceDto resourceDto) {
+        if (resourceDto != null) {
+            BeanUtils.copyProperties(resourceDto, this);
+            schedule = new Schedule(resourceDto.getSchedule());
+            discipline = new Discipline(resourceDto.getDiscipline());
+            group = new Group(resourceDto.getGroup());
+        }
+    }
 }
