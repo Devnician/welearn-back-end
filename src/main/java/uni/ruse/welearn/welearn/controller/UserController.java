@@ -3,13 +3,7 @@ package uni.ruse.welearn.welearn.controller;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import uni.ruse.welearn.welearn.model.Role;
 import uni.ruse.welearn.welearn.model.User;
 import uni.ruse.welearn.welearn.model.auth.ApiResponse;
@@ -87,5 +81,10 @@ public class UserController {
     @PostMapping("/roles/add")
     public ApiResponse<User> saveRole(@RequestBody Role role) {
         return new ApiResponse<>(HttpStatus.OK.value(), "Role saved successfully.", roleService.saveRole(role));
+    }
+
+    @PutMapping("/roles")
+    public ApiResponse<User> updateRole( @RequestBody Role role) {
+        return new ApiResponse<>(HttpStatus.OK.value(), "Role updated successfully.", roleService.updateRole(role));
     }
 }

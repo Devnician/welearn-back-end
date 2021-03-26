@@ -7,7 +7,7 @@ spring:
       max-file-size: "12MB"
       max-request-size: "12MB"
   datasource:
-    url: "jdbc:mysql://localhost:3307/welearn?stringtype=unspecified"
+    url: "jdbc:mysql://localhost:3307/welearn?stringtype=unspecified&useUnicode=true&characterEncoding=UTF-8"
     username: "welearn"
     password: "welearn"
     driver-class-name: com.mysql.jdbc.Driver

@@ -30,10 +30,7 @@ public class RoleService {
      * @return {@link Role}
      */
     public Role saveRole(Role role) {
-        Role newRole = new Role();
-        newRole.setRole(role.getRole());
-        newRole.setDescription(role.getDescription());
-        return roleRepository.save(newRole);
+        return roleRepository.save(role);
     }
 
     /**
@@ -78,14 +75,7 @@ public class RoleService {
      * @return {@link Role}
      */
     public Role updateRole(Role role) {
-        Role existRole = findRoleById(role.getId());
-        if (existRole != null) {
-            existRole.setRole(role.getRole());
-            existRole.setDescription(role.getDescription());
-//TODO add and other fields here
-            roleRepository.save(existRole);
-        }
-        return role;
+        return roleRepository.save(role);
     }
 
 }
