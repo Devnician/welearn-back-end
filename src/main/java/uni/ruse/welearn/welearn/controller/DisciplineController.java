@@ -16,6 +16,10 @@ import uni.ruse.welearn.welearn.model.Discipline;
 import uni.ruse.welearn.welearn.model.auth.ApiResponse;
 import uni.ruse.welearn.welearn.model.dto.DisciplineDto;
 import uni.ruse.welearn.welearn.service.DisciplineService;
+import uni.ruse.welearn.welearn.service.EventService;
+import uni.ruse.welearn.welearn.service.GroupService;
+import uni.ruse.welearn.welearn.service.ResourceService;
+import uni.ruse.welearn.welearn.service.UserService;
 import uni.ruse.welearn.welearn.util.WeLearnException;
 
 import java.util.List;
@@ -32,6 +36,14 @@ public class DisciplineController {
 
     @Autowired
     private DisciplineService disciplineService;
+    @Autowired
+    private GroupService groupService;
+    @Autowired
+    private ResourceService resourceService;
+    @Autowired
+    private UserService userService;
+    @Autowired
+    private EventService eventService;
 
     @GetMapping
     public ApiResponse<List<DisciplineDto>> getDisciplines() {
@@ -48,7 +60,9 @@ public class DisciplineController {
     @PostMapping
     public ApiResponse<DisciplineDto> createDiscipline(@RequestBody DisciplineDto disciplineRequestDto) throws WeLearnException {
         return new ApiResponse<>(HttpStatus.OK.value(), "Discipline created successfully",
-                new DisciplineDto(disciplineService.createDiscipline(disciplineRequestDto)));
+                new DisciplineDto(disciplineService.createDiscipline(
+                        new Discipline(disciplineRequestDto, groupService, disciplineService, resourceService, userService, eventService)
+                )));
     }
 
     @PutMapping
@@ -56,7 +70,9 @@ public class DisciplineController {
             @RequestBody DisciplineDto disciplineResponseDto
     ) throws WeLearnException {
         return new ApiResponse<>(HttpStatus.OK.value(), "Group removed successfully",
-                new DisciplineDto(disciplineService.editDiscipline(new Discipline(disciplineResponseDto))));
+                new DisciplineDto(disciplineService.editDiscipline(
+                        new Discipline(disciplineResponseDto, groupService, disciplineService, resourceService, userService, eventService)
+                )));
     }
 
     @DeleteMapping("/{disciplineId}")

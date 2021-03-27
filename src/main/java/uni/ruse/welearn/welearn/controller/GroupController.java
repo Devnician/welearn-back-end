@@ -15,7 +15,12 @@ import org.springframework.web.bind.annotation.RestController;
 import uni.ruse.welearn.welearn.model.Group;
 import uni.ruse.welearn.welearn.model.auth.ApiResponse;
 import uni.ruse.welearn.welearn.model.dto.GroupDto;
+import uni.ruse.welearn.welearn.service.DisciplineService;
+import uni.ruse.welearn.welearn.service.EventService;
 import uni.ruse.welearn.welearn.service.GroupService;
+import uni.ruse.welearn.welearn.service.ResourceService;
+import uni.ruse.welearn.welearn.service.ScheduleService;
+import uni.ruse.welearn.welearn.service.UserService;
 import uni.ruse.welearn.welearn.util.WeLearnException;
 
 import java.util.List;
@@ -29,9 +34,19 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/group")
 @Slf4j
 public class GroupController {
+
     @Autowired
     private GroupService groupService;
-
+    @Autowired
+    private ScheduleService scheduleService;
+    @Autowired
+    private DisciplineService disciplineService;
+    @Autowired
+    private ResourceService resourceService;
+    @Autowired
+    private UserService userService;
+    @Autowired
+    private EventService eventService;
 
     @GetMapping
     public ApiResponse<List<GroupDto>> findAll() {
@@ -52,7 +67,9 @@ public class GroupController {
             @RequestBody GroupDto groupDto
     ) throws WeLearnException {
         return new ApiResponse<>(HttpStatus.OK.value(), "Group saved successfully",
-                new GroupDto(groupService.save(new Group(groupDto))));
+                new GroupDto(groupService.save(
+                        new Group(groupDto, scheduleService, disciplineService, groupService, resourceService, userService, eventService)
+                )));
     }
 
     @PutMapping
@@ -60,7 +77,9 @@ public class GroupController {
             @RequestBody GroupDto groupDto
     ) throws WeLearnException {
         return new ApiResponse<>(HttpStatus.OK.value(), "Group edited successfully",
-                new GroupDto(groupService.edit(new Group(groupDto))));
+                new GroupDto(groupService.edit(
+                        new Group(groupDto, scheduleService, disciplineService, groupService, resourceService, userService, eventService)
+                )));
     }
 
     @DeleteMapping("/{id}")

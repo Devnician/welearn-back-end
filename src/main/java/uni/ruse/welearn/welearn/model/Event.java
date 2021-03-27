@@ -12,7 +12,12 @@ import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 import org.springframework.beans.BeanUtils;
 import uni.ruse.welearn.welearn.model.dto.EventDto;
+import uni.ruse.welearn.welearn.service.DisciplineService;
+import uni.ruse.welearn.welearn.service.EventService;
+import uni.ruse.welearn.welearn.service.GroupService;
+import uni.ruse.welearn.welearn.service.UserService;
 import uni.ruse.welearn.welearn.util.AuditedClass;
+import uni.ruse.welearn.welearn.util.WeLearnException;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -62,11 +67,28 @@ public class Event extends AuditedClass {
     @JsonManagedReference
     private Set<User> blacklist;
 
-    public Event(EventDto eventDto) {
+    public Event(
+            EventDto eventDto,
+            GroupService groupService,
+            DisciplineService disciplineService,
+            UserService userService,
+            EventService eventService
+    ) throws WeLearnException {
         if (eventDto != null) {
             BeanUtils.copyProperties(eventDto, this);
-            group = new Group(eventDto.getGroup());
-            blacklist = eventDto.getBlacklist().stream().map(User::new).collect(Collectors.toSet());
+            if (eventDto.getGroupId() != null) {
+                group = groupService.findOne(eventDto.getGroupId());
+            }
+            if (eventDto.getBlacklist() != null) {
+                blacklist = eventDto.getBlacklist().stream().map(it -> {
+                    try {
+                        return new User(it, groupService, disciplineService, userService, eventService);
+                    } catch (WeLearnException e) {
+                        e.printStackTrace();
+                    }
+                    return null;
+                }).collect(Collectors.toSet());
+            }
         }
     }
 }

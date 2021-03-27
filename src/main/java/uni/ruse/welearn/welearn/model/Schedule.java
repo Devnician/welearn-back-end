@@ -12,7 +12,11 @@ import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 import org.springframework.beans.BeanUtils;
 import uni.ruse.welearn.welearn.model.dto.ScheduleDto;
+import uni.ruse.welearn.welearn.service.DisciplineService;
+import uni.ruse.welearn.welearn.service.GroupService;
+import uni.ruse.welearn.welearn.service.ResourceService;
 import uni.ruse.welearn.welearn.util.AuditedClass;
+import uni.ruse.welearn.welearn.util.WeLearnException;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -62,12 +66,30 @@ public class Schedule extends AuditedClass {
     @JsonManagedReference
     private Set<Resource> resources;
 
-    public Schedule(ScheduleDto scheduleDto) {
+    public Schedule(
+            ScheduleDto scheduleDto,
+            GroupService groupService,
+            DisciplineService disciplineService,
+            ResourceService resourceService
+    ) throws WeLearnException {
         if (scheduleDto != null) {
             BeanUtils.copyProperties(scheduleDto, this);
-            group = new Group(scheduleDto.getGroup());
-            discipline = new Discipline(scheduleDto.getDiscipline());
-            resources = scheduleDto.getResources().stream().map(Resource::new).collect(Collectors.toSet());
+            if (scheduleDto.getGroupId() != null) {
+                group = groupService.findOne(scheduleDto.getGroupId());
+            }
+            if (scheduleDto.getDisciplineId() != null) {
+                discipline = disciplineService.getDisciplineById(scheduleDto.getDisciplineId());
+            }
+            if (scheduleDto.getResourceIds() != null) {
+                resources = scheduleDto.getResourceIds().stream().map(id1 -> {
+                    try {
+                        return resourceService.findById(id1);
+                    } catch (WeLearnException e) {
+                        e.printStackTrace();
+                    }
+                    return null;
+                }).collect(Collectors.toSet());
+            }
         }
     }
 }

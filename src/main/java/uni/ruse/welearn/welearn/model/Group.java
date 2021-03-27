@@ -11,12 +11,21 @@ import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 import org.springframework.beans.BeanUtils;
 import uni.ruse.welearn.welearn.model.dto.GroupDto;
+import uni.ruse.welearn.welearn.service.DisciplineService;
+import uni.ruse.welearn.welearn.service.EventService;
+import uni.ruse.welearn.welearn.service.GroupService;
+import uni.ruse.welearn.welearn.service.ResourceService;
+import uni.ruse.welearn.welearn.service.ScheduleService;
+import uni.ruse.welearn.welearn.service.UserService;
 import uni.ruse.welearn.welearn.util.AuditedClass;
+import uni.ruse.welearn.welearn.util.WeLearnException;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import java.sql.Timestamp;
@@ -48,7 +57,11 @@ public class Group extends AuditedClass {
     @JsonManagedReference
     private Set<Event> events;
 
-    @ManyToMany(mappedBy = "group", fetch = FetchType.LAZY)
+    @ManyToMany
+    @JoinTable(
+            name = "discipline_group",
+            joinColumns = @JoinColumn(name = "discipline_id"),
+            inverseJoinColumns = @JoinColumn(name = "group_id"))
     @LazyCollection(LazyCollectionOption.FALSE)
     @JsonManagedReference
     private Set<Discipline> disciplines;
@@ -71,14 +84,67 @@ public class Group extends AuditedClass {
     private Timestamp startDate;
     private Timestamp endDate;
 
-    public Group(GroupDto groupDto) {
+    public Group(
+            GroupDto groupDto,
+            ScheduleService scheduleService,
+            DisciplineService disciplineService,
+            GroupService groupService,
+            ResourceService resourceService,
+            UserService userService,
+            EventService eventService
+    ) {
         if (groupDto != null) {
             BeanUtils.copyProperties(groupDto, this);
-            resources = groupDto.getResources().stream().map(Resource::new).collect(Collectors.toSet());
-            disciplines = groupDto.getDisciplines().stream().map(Discipline::new).collect(Collectors.toSet());
-            events = groupDto.getEvents().stream().map(Event::new).collect(Collectors.toSet());
-            schedules = groupDto.getSchedules().stream().map(Schedule::new).collect(Collectors.toSet());
-            users = groupDto.getUsers().stream().map(User::new).collect(Collectors.toSet());
+            if (groupDto.getResources() != null) {
+                resources = groupDto.getResources().stream().map(it -> {
+                    try {
+                        return new Resource(it, scheduleService, disciplineService, groupService);
+                    } catch (WeLearnException e) {
+                        e.printStackTrace();
+                    }
+                    return null;
+                }).collect(Collectors.toSet());
+            }
+            if (groupDto.getDisciplines() != null) {
+                disciplines = groupDto.getDisciplines().stream().map(it -> {
+                    try {
+                        return new Discipline(it, groupService, disciplineService, resourceService, userService, eventService);
+                    } catch (WeLearnException e) {
+                        e.printStackTrace();
+                    }
+                    return null;
+                }).collect(Collectors.toSet());
+            }
+            if (groupDto.getEvents() != null) {
+                events = groupDto.getEvents().stream().map(it -> {
+                    try {
+                        return new Event(it, groupService, disciplineService, userService, eventService);
+                    } catch (WeLearnException e) {
+                        e.printStackTrace();
+                    }
+                    return null;
+                }).collect(Collectors.toSet());
+            }
+            if (groupDto.getSchedules() != null) {
+                schedules = groupDto.getSchedules().stream().map(it -> {
+                    try {
+                        return new Schedule(it, groupService, disciplineService, resourceService);
+                    } catch (WeLearnException e) {
+                        e.printStackTrace();
+                    }
+                    return null;
+                }).collect(Collectors.toSet());
+            }
+            if (groupDto.getUsers() != null) {
+                users = groupDto.getUsers().stream().map(it -> {
+                    try {
+                        return new User(it, groupService, disciplineService, userService, eventService);
+                    } catch (WeLearnException e) {
+                        e.printStackTrace();
+                    }
+                    return null;
+                }).collect(Collectors.toSet());
+            }
         }
     }
 }

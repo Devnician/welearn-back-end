@@ -12,8 +12,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.web.filter.OncePerRequestFilter;
 import uni.ruse.welearn.welearn.model.User;
-import uni.ruse.welearn.welearn.services.IPService;
-import uni.ruse.welearn.welearn.services.UserService;
+import uni.ruse.welearn.welearn.service.IPService;
+import uni.ruse.welearn.welearn.service.UserService;
 import uni.ruse.welearn.welearn.util.JwtTokenUtil;
 
 import javax.servlet.FilterChain;

@@ -4,7 +4,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import uni.ruse.welearn.welearn.model.Discipline;
-import uni.ruse.welearn.welearn.model.dto.DisciplineDto;
 import uni.ruse.welearn.welearn.repository.DisciplineRepository;
 import uni.ruse.welearn.welearn.util.WeLearnException;
 
@@ -37,9 +36,11 @@ public class DisciplineService {
         return discipline.get();
     }
 
-    public Discipline createDiscipline(DisciplineDto disciplineRequestDto) throws WeLearnException {
-        findOne(disciplineRequestDto.getId());
-        return disciplineRepository.save(new Discipline(disciplineRequestDto));
+    public Discipline createDiscipline(Discipline discipline) throws WeLearnException {
+        if (disciplineRepository.findById(discipline.getId()).isEmpty()) {
+            return disciplineRepository.save(discipline);
+        }
+        throw new WeLearnException("Discipline with id " + discipline.getId() + " already exists");
     }
 
     public Discipline editDiscipline(Discipline discipline) throws WeLearnException {

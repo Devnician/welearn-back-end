@@ -9,7 +9,11 @@ import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.beans.BeanUtils;
 import uni.ruse.welearn.welearn.model.dto.ResourceDto;
+import uni.ruse.welearn.welearn.service.DisciplineService;
+import uni.ruse.welearn.welearn.service.GroupService;
+import uni.ruse.welearn.welearn.service.ScheduleService;
 import uni.ruse.welearn.welearn.util.AuditedClass;
+import uni.ruse.welearn.welearn.util.WeLearnException;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -54,12 +58,23 @@ public class Resource extends AuditedClass {
     @JsonBackReference
     private Schedule schedule;
 
-    public Resource(ResourceDto resourceDto) {
+    public Resource(
+            ResourceDto resourceDto,
+            ScheduleService scheduleService,
+            DisciplineService disciplineService,
+            GroupService groupService
+    ) throws WeLearnException {
         if (resourceDto != null) {
             BeanUtils.copyProperties(resourceDto, this);
-            schedule = new Schedule(resourceDto.getSchedule());
-            discipline = new Discipline(resourceDto.getDiscipline());
-            group = new Group(resourceDto.getGroup());
+            if (resourceDto.getScheduleId() != null) {
+                schedule = scheduleService.findById(resourceDto.getScheduleId());
+            }
+            if (resourceDto.getDisciplineId() != null) {
+                discipline = disciplineService.getDisciplineById(resourceDto.getDisciplineId());
+            }
+            if (resourceDto.getGroupId() != null) {
+                group = groupService.findOne(resourceDto.getGroupId());
+            }
         }
     }
 }

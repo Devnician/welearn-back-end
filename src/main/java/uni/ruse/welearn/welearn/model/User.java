@@ -1,7 +1,6 @@
 package uni.ruse.welearn.welearn.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,7 +12,12 @@ import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 import org.springframework.beans.BeanUtils;
 import uni.ruse.welearn.welearn.model.dto.UserDto;
+import uni.ruse.welearn.welearn.service.DisciplineService;
+import uni.ruse.welearn.welearn.service.EventService;
+import uni.ruse.welearn.welearn.service.GroupService;
+import uni.ruse.welearn.welearn.service.UserService;
 import uni.ruse.welearn.welearn.util.AuditedClass;
+import uni.ruse.welearn.welearn.util.WeLearnException;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -21,6 +25,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import java.util.Set;
@@ -71,9 +76,9 @@ public class User extends AuditedClass {
     @JsonBackReference
     private Role role;
 
-//    @ManyToMany(mappedBy = "blacklist")
-//    @LazyCollection(LazyCollectionOption.FALSE)
-//    private Set<Event> blacklistedEvents;
+    @ManyToMany(mappedBy = "blacklist")
+    @LazyCollection(LazyCollectionOption.FALSE)
+    private Set<Event> blacklistedEvents;
 
     @OneToMany(mappedBy = "teacher", fetch = FetchType.LAZY)
     @LazyCollection(LazyCollectionOption.FALSE)
@@ -85,14 +90,59 @@ public class User extends AuditedClass {
     @JsonManagedReference
     private Set<Discipline> assistedDiscipline;
 
-    public User(UserDto userDto) {
+    public User(
+            UserDto userDto,
+            GroupService groupService,
+            DisciplineService disciplineService,
+            UserService userService,
+            EventService eventService
+    ) throws WeLearnException {
         if (userDto != null) {
             BeanUtils.copyProperties(userDto, this);
-            role = new Role(userDto.getRole());
-            group = new Group(userDto.getGroup());
-            evaluationMarks = userDto.getEvaluationMarks().stream().map(EvaluationMark::new).collect(Collectors.toSet());
-            taughtDiscipline = userDto.getTaughtDiscipline().stream().map(Discipline::new).collect(Collectors.toSet());
-            assistedDiscipline = userDto.getAssistedDiscipline().stream().map(Discipline::new).collect(Collectors.toSet());
+            if (userDto.getBlackListedEventIds() != null) {
+                blacklistedEvents = userDto.getBlackListedEventIds().stream().map(it -> {
+                    try {
+                        return eventService.findById(it);
+                    } catch (WeLearnException e) {
+                        e.printStackTrace();
+                    }
+                    return null;
+                }).collect(Collectors.toSet());
+            }
+            role = new Role(userDto.getRole(), userService);
+            if (userDto.getGroupId() != null) {
+                group = groupService.findOne(userDto.getGroupId());
+            }
+            if (userDto.getEvaluationMarks() != null) {
+                evaluationMarks = userDto.getEvaluationMarks().stream().map(it -> {
+                    try {
+                        return new EvaluationMark(it, groupService, disciplineService, userService);
+                    } catch (WeLearnException e) {
+                        e.printStackTrace();
+                    }
+                    return null;
+                }).collect(Collectors.toSet());
+            }
+            if (userDto.getTaughtDisciplineIds() != null) {
+                taughtDiscipline = userDto.getTaughtDisciplineIds().stream().map(disciplineId -> {
+                    try {
+                        return disciplineService.getDisciplineById(disciplineId);
+                    } catch (WeLearnException e) {
+                        e.printStackTrace();
+                    }
+                    return null;
+                }).collect(Collectors.toSet());
+            }
+            if (userDto.getAssistedDisciplineIds() != null) {
+                assistedDiscipline = userDto.getAssistedDisciplineIds().stream().map(disciplineId -> {
+                    try {
+                        return disciplineService.getDisciplineById(disciplineId);
+                    } catch (WeLearnException e) {
+                        e.printStackTrace();
+                    }
+                    return null;
+                }).collect(Collectors.toSet());
+            }
         }
     }
 }

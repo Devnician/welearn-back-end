@@ -12,7 +12,8 @@ import org.springframework.web.bind.annotation.RestController;
 import uni.ruse.welearn.welearn.model.Role;
 import uni.ruse.welearn.welearn.model.auth.ApiResponse;
 import uni.ruse.welearn.welearn.model.dto.RoleDto;
-import uni.ruse.welearn.welearn.services.RoleService;
+import uni.ruse.welearn.welearn.service.RoleService;
+import uni.ruse.welearn.welearn.service.UserService;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -28,6 +29,8 @@ public class RoleController {
 
     @Autowired
     private RoleService roleService;
+    @Autowired
+    private UserService userService;
 
     /**
      * Lists roles
@@ -48,6 +51,8 @@ public class RoleController {
      */
     @PostMapping("/add")
     public ApiResponse<RoleDto> saveRole(@RequestBody RoleDto role) {
-        return new ApiResponse<>(HttpStatus.OK.value(), "Role saved successfully.", new RoleDto(roleService.saveRole(new Role(role))));
+        return new ApiResponse<>(HttpStatus.OK.value(), "Role saved successfully.", new RoleDto(roleService.saveRole(
+                new Role(role, userService)
+        )));
     }
 }

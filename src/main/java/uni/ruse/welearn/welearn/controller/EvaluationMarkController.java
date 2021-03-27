@@ -15,7 +15,10 @@ import org.springframework.web.bind.annotation.RestController;
 import uni.ruse.welearn.welearn.model.EvaluationMark;
 import uni.ruse.welearn.welearn.model.auth.ApiResponse;
 import uni.ruse.welearn.welearn.model.dto.EvaluationMarkDto;
+import uni.ruse.welearn.welearn.service.DisciplineService;
 import uni.ruse.welearn.welearn.service.EvaluationMarkService;
+import uni.ruse.welearn.welearn.service.GroupService;
+import uni.ruse.welearn.welearn.service.UserService;
 import uni.ruse.welearn.welearn.util.WeLearnException;
 
 import java.util.List;
@@ -32,6 +35,12 @@ public class EvaluationMarkController {
 
     @Autowired
     private EvaluationMarkService evaluationMarkService;
+    @Autowired
+    private GroupService groupService;
+    @Autowired
+    private DisciplineService disciplineService;
+    @Autowired
+    private UserService userService;
 
     @GetMapping("/{id}")
     public ApiResponse<EvaluationMarkDto> getById(
@@ -50,7 +59,9 @@ public class EvaluationMarkController {
             @RequestBody EvaluationMarkDto evaluationMarkDto
     ) throws WeLearnException {
         return new ApiResponse<>(HttpStatus.OK.value(), "Mark saved successfully",
-                new EvaluationMarkDto(evaluationMarkService.save(new EvaluationMark(evaluationMarkDto))));
+                new EvaluationMarkDto(evaluationMarkService.save(
+                        new EvaluationMark(evaluationMarkDto, groupService, disciplineService, userService)
+                )));
     }
 
     @PutMapping
@@ -58,7 +69,9 @@ public class EvaluationMarkController {
             @RequestBody EvaluationMarkDto evaluationMarkDto
     ) throws WeLearnException {
         return new ApiResponse<>(HttpStatus.OK.value(), "Mark edited successfully",
-                new EvaluationMarkDto(evaluationMarkService.edit(new EvaluationMark(evaluationMarkDto))));
+                new EvaluationMarkDto(evaluationMarkService.edit(
+                        new EvaluationMark(evaluationMarkDto, groupService, disciplineService, userService)
+                )));
     }
 
     @DeleteMapping("/{id}")

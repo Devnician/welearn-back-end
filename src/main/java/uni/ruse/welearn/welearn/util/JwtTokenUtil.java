@@ -11,8 +11,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 import uni.ruse.welearn.welearn.model.Role;
 import uni.ruse.welearn.welearn.model.User;
-import uni.ruse.welearn.welearn.services.RoleService;
-import uni.ruse.welearn.welearn.services.UserService;
+import uni.ruse.welearn.welearn.service.RoleService;
+import uni.ruse.welearn.welearn.service.UserService;
 
 import java.io.Serializable;
 import java.util.Arrays;

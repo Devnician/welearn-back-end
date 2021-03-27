@@ -1,4 +1,4 @@
-package uni.ruse.welearn.welearn.services;
+package uni.ruse.welearn.welearn.service;
 
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -8,6 +8,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import uni.ruse.welearn.welearn.model.Group;
 import uni.ruse.welearn.welearn.model.Role;
 import uni.ruse.welearn.welearn.model.User;
 import uni.ruse.welearn.welearn.model.auth.ApiResponse;
@@ -34,6 +35,8 @@ public class UserService implements UserDetailsService {
     private UserRepository userRepository;
     @Autowired
     private RoleRepository roleRepository;
+    @Autowired
+    private GroupService groupService;
 
     /**
      *
@@ -144,13 +147,17 @@ public class UserService implements UserDetailsService {
                     existingUser.setRole(role.get());
                 }
             }
+            if(user.getGroup() != null){
+                Group existingGroup = groupService.findOne(user.getGroup().getGroupId());
+                existingUser.setGroup(existingGroup);
+            }
             existingUser = userRepository.save(existingUser);
         }
         return existingUser;
     }
 
     /**
-     * Adds {@link User} and build sresponse for frontend
+     * Adds {@link User} and builds response for frontend
      *
      * @param user {@link User}
      * @return {@link ApiResponse}
@@ -160,7 +167,6 @@ public class UserService implements UserDetailsService {
             user.setPassword(bcryptEncoder.encode(user.getPassword()));
             user.setDeleted(0);
             user.setLoggedIn(0);
-
             return userRepository.save(user);
         } else {
             throw new WeLearnException("User already exists");

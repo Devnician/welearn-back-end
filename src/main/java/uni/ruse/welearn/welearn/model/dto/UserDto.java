@@ -1,12 +1,12 @@
 package uni.ruse.welearn.welearn.model.dto;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.beans.BeanUtils;
+import uni.ruse.welearn.welearn.model.Discipline;
+import uni.ruse.welearn.welearn.model.Event;
 import uni.ruse.welearn.welearn.model.User;
 
 import java.util.Set;
@@ -32,26 +32,33 @@ public class UserDto {
     private String middleName;
     private int loggedIn;
     private int deleted;
-    @JsonBackReference("user-group")
-    private GroupDto group;
-    @JsonManagedReference("user-mark")
+    private String groupId;
     private Set<EvaluationMarkDto> evaluationMarks;
-    @JsonBackReference("user-role")
     private RoleDto role;
-    @JsonManagedReference("teacher-discipline")
-    private Set<DisciplineDto> taughtDiscipline;
-    @JsonManagedReference("assistant-discipline")
-    private Set<DisciplineDto> assistedDiscipline;
+    private Set<String> taughtDisciplineIds;
+    private Set<String> assistedDisciplineIds;
+    private Set<String> blackListedEventIds;
 
     public UserDto(User user) {
         if (user != null) {
             BeanUtils.copyProperties(user, this);
             password = null;
-//            group = new GroupDto(user.getGroup());
-            evaluationMarks = user.getEvaluationMarks().stream().map(EvaluationMarkDto::new).collect(Collectors.toSet());
+            if (user.getGroup() != null) {
+                groupId = user.getGroup().getGroupId();
+            }
+            if (user.getEvaluationMarks() != null) {
+                evaluationMarks = user.getEvaluationMarks().stream().map(EvaluationMarkDto::new).collect(Collectors.toSet());
+            }
             role = new RoleDto(user.getRole());
-//            taughtDiscipline = user.getTaughtDiscipline().stream().map(DisciplineDto::new).collect(Collectors.toSet());
-//            assistedDiscipline = user.getAssistedDiscipline().stream().map(DisciplineDto::new).collect(Collectors.toSet());
+            if (user.getTaughtDiscipline() != null) {
+                taughtDisciplineIds = user.getTaughtDiscipline().stream().map(Discipline::getId).collect(Collectors.toSet());
+            }
+            if (user.getAssistedDiscipline() != null) {
+                assistedDisciplineIds = user.getAssistedDiscipline().stream().map(Discipline::getId).collect(Collectors.toSet());
+            }
+            if (user.getBlacklistedEvents() != null) {
+                blackListedEventIds = user.getBlacklistedEvents().stream().map(Event::getEventId).collect(Collectors.toSet());
+            }
         }
     }
 }

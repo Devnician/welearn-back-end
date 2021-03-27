@@ -12,7 +12,13 @@ import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 import org.springframework.beans.BeanUtils;
 import uni.ruse.welearn.welearn.model.dto.DisciplineDto;
+import uni.ruse.welearn.welearn.service.DisciplineService;
+import uni.ruse.welearn.welearn.service.EventService;
+import uni.ruse.welearn.welearn.service.GroupService;
+import uni.ruse.welearn.welearn.service.ResourceService;
+import uni.ruse.welearn.welearn.service.UserService;
 import uni.ruse.welearn.welearn.util.AuditedClass;
+import uni.ruse.welearn.welearn.util.WeLearnException;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -50,9 +56,9 @@ public class Discipline extends AuditedClass {
     @JsonManagedReference
     private Set<Resource> resources;
 
-    @ManyToMany
+    @ManyToMany(mappedBy = "disciplines", fetch = FetchType.LAZY)
+    @LazyCollection(LazyCollectionOption.FALSE)
     @JsonManagedReference
-    @JoinColumn(name = "group_id")
     private Set<Group> group;
 
     @ManyToOne
@@ -65,12 +71,32 @@ public class Discipline extends AuditedClass {
     @JoinColumn(name = "assistant_id")
     private User assistant;
 
-    public Discipline(DisciplineDto disciplineResponseDto) {
-        if (disciplineResponseDto != null) {
-            BeanUtils.copyProperties(disciplineResponseDto, this);
-            resources = disciplineResponseDto.getResources().stream().map(Resource::new).collect(Collectors.toSet());
-            teacher = new User(disciplineResponseDto.getTeacher());
-            assistant = new User(disciplineResponseDto.getAssistant());
+    public Discipline(
+            DisciplineDto disciplineDto,
+            GroupService groupService,
+            DisciplineService disciplineService,
+            ResourceService resourceService,
+            UserService userService,
+            EventService eventService
+    ) throws WeLearnException {
+        if (disciplineDto != null) {
+            BeanUtils.copyProperties(disciplineDto, this);
+            if (disciplineDto.getResourceIds() != null) {
+                resources = disciplineDto.getResourceIds().stream().map(it -> {
+                    try {
+                        return resourceService.findById(it);
+                    } catch (WeLearnException e) {
+                        e.printStackTrace();
+                    }
+                    return null;
+                }).collect(Collectors.toSet());
+            }
+            if (disciplineDto.getTeacher() != null) {
+                teacher = new User(disciplineDto.getTeacher(), groupService, disciplineService, userService, eventService);
+            }
+            if (disciplineDto.getAssistant() != null) {
+                assistant = new User(disciplineDto.getAssistant(), groupService, disciplineService, userService, eventService);
+            }
         }
     }
 }

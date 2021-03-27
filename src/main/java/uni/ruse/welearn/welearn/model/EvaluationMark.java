@@ -1,7 +1,6 @@
 package uni.ruse.welearn.welearn.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -10,7 +9,11 @@ import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.beans.BeanUtils;
 import uni.ruse.welearn.welearn.model.dto.EvaluationMarkDto;
+import uni.ruse.welearn.welearn.service.DisciplineService;
+import uni.ruse.welearn.welearn.service.GroupService;
+import uni.ruse.welearn.welearn.service.UserService;
 import uni.ruse.welearn.welearn.util.AuditedClass;
+import uni.ruse.welearn.welearn.util.WeLearnException;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -53,12 +56,23 @@ public class EvaluationMark extends AuditedClass {
     @JsonBackReference
     private User user;
 
-    public EvaluationMark(EvaluationMarkDto evaluationMarkDto) {
+    public EvaluationMark(
+            EvaluationMarkDto evaluationMarkDto,
+            GroupService groupService,
+            DisciplineService disciplineService,
+            UserService userService
+    ) throws WeLearnException {
         if (evaluationMarkDto != null) {
             BeanUtils.copyProperties(evaluationMarkDto, this);
-            group = new Group(evaluationMarkDto.getGroup());
-            discipline = new Discipline(evaluationMarkDto.getDiscipline());
-            user = new User(evaluationMarkDto.getUser());
+            if (evaluationMarkDto.getGroupId() != null) {
+                group = groupService.findOne(evaluationMarkDto.getGroupId());
+            }
+            if (evaluationMarkDto.getDisciplineId() != null) {
+                discipline = disciplineService.getDisciplineById(evaluationMarkDto.getDisciplineId());
+            }
+            if (evaluationMarkDto.getUserId() != null) {
+                user = userService.findUserById(evaluationMarkDto.getUserId());
+            }
         }
     }
 }

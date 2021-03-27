@@ -20,8 +20,8 @@ import uni.ruse.welearn.welearn.model.User;
 import uni.ruse.welearn.welearn.model.auth.ApiResponse;
 import uni.ruse.welearn.welearn.model.auth.AuthToken;
 import uni.ruse.welearn.welearn.model.auth.LoginUser;
-import uni.ruse.welearn.welearn.services.RoleService;
-import uni.ruse.welearn.welearn.services.UserService;
+import uni.ruse.welearn.welearn.service.RoleService;
+import uni.ruse.welearn.welearn.service.UserService;
 import uni.ruse.welearn.welearn.util.JwtTokenUtil;
 
 @CrossOrigin(maxAge = 3600)

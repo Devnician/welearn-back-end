@@ -1,6 +1,5 @@
 package uni.ruse.welearn.welearn.model.dto;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,19 +20,22 @@ public class ResourceDto {
     private String type;
     private String dirPath;
     private Boolean accessibleAll;
-    @JsonBackReference("resource-group")
-    private GroupDto group;
-    @JsonBackReference("resource-discipline")
-    private DisciplineDto discipline;
-    @JsonBackReference("schedule-resource")
-    private ScheduleDto schedule;
+    private String groupId;
+    private String disciplineId;
+    private String scheduleId;
 
     public ResourceDto(Resource resource) {
         if (resource != null) {
             BeanUtils.copyProperties(resource, this);
-//            group = new GroupDto(resource.getGroup());
-//            discipline = new DisciplineDto(resource.getDiscipline());
-//            schedule = new ScheduleDto(resource.getSchedule());
+            if (resource.getGroup() != null) {
+                groupId = resource.getGroup().getGroupId();
+            }
+            if (resource.getDiscipline() != null) {
+                disciplineId = resource.getDiscipline().getId();
+            }
+            if (resource.getSchedule() != null) {
+                scheduleId = resource.getSchedule().getId();
+            }
         }
     }
 }

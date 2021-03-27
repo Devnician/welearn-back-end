@@ -1,6 +1,5 @@
 package uni.ruse.welearn.welearn.model.dto;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,19 +19,22 @@ import java.math.BigDecimal;
 public class EvaluationMarkDto {
     private String id;
     private BigDecimal markValue;
-    @JsonBackReference("mark-group")
-    private GroupDto group;
-    @JsonBackReference("mark-discipline")
-    private DisciplineDto discipline;
-    @JsonBackReference("user-mark")
-    private UserDto user;
+    private String groupId;
+    private String disciplineId;
+    private String userId;
 
     public EvaluationMarkDto(EvaluationMark evaluationMark) {
         if (evaluationMark != null) {
             BeanUtils.copyProperties(evaluationMark, this);
-//            group = new GroupDto(evaluationMark.getGroup());
-//            discipline = new DisciplineDto(evaluationMark.getDiscipline());
-//            user = new UserDto(evaluationMark.getUser());
+            if (evaluationMark.getGroup() != null) {
+                groupId = evaluationMark.getGroup().getGroupId();
+            }
+            if (evaluationMark.getDiscipline() != null) {
+                disciplineId = evaluationMark.getDiscipline().getId();
+            }
+            if (evaluationMark.getUser() != null) {
+                userId = evaluationMark.getUser().getUserId();
+            }
         }
     }
 }

@@ -15,8 +15,11 @@ import org.springframework.web.bind.annotation.RestController;
 import uni.ruse.welearn.welearn.model.User;
 import uni.ruse.welearn.welearn.model.auth.ApiResponse;
 import uni.ruse.welearn.welearn.model.dto.UserDto;
-import uni.ruse.welearn.welearn.services.RoleService;
-import uni.ruse.welearn.welearn.services.UserService;
+import uni.ruse.welearn.welearn.service.DisciplineService;
+import uni.ruse.welearn.welearn.service.EventService;
+import uni.ruse.welearn.welearn.service.GroupService;
+import uni.ruse.welearn.welearn.service.RoleService;
+import uni.ruse.welearn.welearn.service.UserService;
 import uni.ruse.welearn.welearn.util.WeLearnException;
 
 import java.util.List;
@@ -35,6 +38,12 @@ public class UserController {
     private UserService userService;
     @Autowired
     private RoleService roleService;
+    @Autowired
+    private GroupService groupService;
+    @Autowired
+    private EventService eventService;
+    @Autowired
+    private DisciplineService disciplineService;
 
     /**
      * Persist the user data
@@ -44,7 +53,9 @@ public class UserController {
      */
     @PostMapping(consumes = "application/json", produces = "application/json")
     public ApiResponse<UserDto> saveUser(@RequestBody UserDto user) throws WeLearnException {
-        return new ApiResponse<>(HttpStatus.OK.value(), "User added successfully", new UserDto(userService.addUser(new User(user))));
+        return new ApiResponse<>(HttpStatus.OK.value(), "User added successfully",
+                new UserDto(userService.addUser(new User(user, groupService, disciplineService, userService, eventService)))
+        );
     }
 
     /**
@@ -56,6 +67,15 @@ public class UserController {
     public ApiResponse<List<UserDto>> listUser() {
         return new ApiResponse<>(HttpStatus.OK.value(), "User list fetched successfully.",
                 userService.findAllUsers().stream().map(UserDto::new).collect(Collectors.toList()));
+    }
+
+    @GetMapping("/{id}")
+    public ApiResponse<UserDto> getUser(
+            @PathVariable String id
+    ) throws WeLearnException {
+        return new ApiResponse<>(HttpStatus.OK.value(), "User retrieved successfully",
+                new UserDto(userService.findUserById(id))
+                );
     }
 
     /**
@@ -76,7 +96,9 @@ public class UserController {
     public ApiResponse<UserDto> updateUser(
             @RequestBody UserDto userDto
     ) throws WeLearnException {
-        return new ApiResponse<>(HttpStatus.OK.value(), "User updated successfully.", new UserDto(userService.updateUser(new User(userDto))));
+        return new ApiResponse<>(HttpStatus.OK.value(), "User updated successfully.", new UserDto(userService.updateUser(
+                new User(userDto, groupService, disciplineService, userService, eventService)
+        )));
     }
 
     @DeleteMapping("/{customer-id}")

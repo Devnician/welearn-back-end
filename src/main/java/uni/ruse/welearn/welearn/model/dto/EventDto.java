@@ -1,6 +1,5 @@
 package uni.ruse.welearn.welearn.model.dto;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -25,15 +24,18 @@ public class EventDto {
     private Timestamp startDate;
     private Timestamp endDate;
     private String type;
-    @JsonBackReference("event-group")
-    private GroupDto group;
+    private String groupId;
     private Set<UserDto> blacklist;
 
     public EventDto(Event event) {
         if (event != null) {
             BeanUtils.copyProperties(event, this);
-//            group = new GroupDto(event.getGroup());
-            blacklist = event.getBlacklist().stream().map(UserDto::new).collect(Collectors.toSet());
+            if (event.getGroup() != null) {
+                groupId = event.getGroup().getGroupId();
+            }
+            if (event.getBlacklist() != null) {
+                blacklist = event.getBlacklist().stream().map(UserDto::new).collect(Collectors.toSet());
+            }
         }
     }
 }
