@@ -4,8 +4,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -43,6 +46,15 @@ public class RoleController {
         return new ApiResponse<>(HttpStatus.OK.value(), "Role list fetched successfully.", roles);
     }
 
+    @GetMapping("/{id}")
+    public ApiResponse<RoleDto> getRoleById(
+            @PathVariable Long id
+    ) {
+        return new ApiResponse<>(HttpStatus.OK.value(), "Role fetched succesfully",
+                new RoleDto(roleService.findRoleById(id))
+        );
+    }
+
     /**
      * Adds new role into db
      *
@@ -54,5 +66,22 @@ public class RoleController {
         return new ApiResponse<>(HttpStatus.OK.value(), "Role saved successfully.", new RoleDto(roleService.saveRole(
                 new Role(role, userService)
         )));
+    }
+
+    @PutMapping
+    public ApiResponse<RoleDto> updateRole(
+            @RequestBody RoleDto roleDto
+    ) {
+        return new ApiResponse<>(HttpStatus.OK.value(), "Role edited successfully", new RoleDto(roleService.updateRole(
+                new Role(roleDto, userService)
+        )));
+    }
+
+    @DeleteMapping("/{id}")
+    public ApiResponse<Boolean> deleteRole(
+            @PathVariable Long id
+    ) {
+        roleService.deleteRoleById(id);
+        return new ApiResponse<>(HttpStatus.OK.value(), "Role deleted successfully", true);
     }
 }
