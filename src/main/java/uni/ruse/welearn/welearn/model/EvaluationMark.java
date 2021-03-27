@@ -1,13 +1,19 @@
 package uni.ruse.welearn.welearn.model;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
+import org.springframework.beans.BeanUtils;
+import uni.ruse.welearn.welearn.model.dto.EvaluationMarkDto;
+import uni.ruse.welearn.welearn.service.DisciplineService;
+import uni.ruse.welearn.welearn.service.GroupService;
+import uni.ruse.welearn.welearn.service.UserService;
 import uni.ruse.welearn.welearn.util.AuditedClass;
+import uni.ruse.welearn.welearn.util.WeLearnException;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -37,24 +43,36 @@ public class EvaluationMark extends AuditedClass {
 
     @ManyToOne
     @JoinColumn(name = "group_id")
-    @JsonManagedReference
+    @JsonBackReference
     private Group group;
 
     @ManyToOne
     @JoinColumn(name = "discipline_id")
-    @JsonManagedReference
+    @JsonBackReference
     private Discipline discipline;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-    @JsonManagedReference
+    @JsonBackReference
     private User user;
 
-    @Override
-    public String toString() {
-        return "EvaluationMark{" +
-                "id='" + id + '\'' +
-                ", markValue=" + markValue +
-                '}';
+    public EvaluationMark(
+            EvaluationMarkDto evaluationMarkDto,
+            GroupService groupService,
+            DisciplineService disciplineService,
+            UserService userService
+    ) throws WeLearnException {
+        if (evaluationMarkDto != null) {
+            BeanUtils.copyProperties(evaluationMarkDto, this);
+            if (evaluationMarkDto.getGroupId() != null) {
+                group = groupService.findOne(evaluationMarkDto.getGroupId());
+            }
+            if (evaluationMarkDto.getDisciplineId() != null) {
+                discipline = disciplineService.getDisciplineById(evaluationMarkDto.getDisciplineId());
+            }
+            if (evaluationMarkDto.getUserId() != null) {
+                user = userService.findUserById(evaluationMarkDto.getUserId());
+            }
+        }
     }
 }

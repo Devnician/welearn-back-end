@@ -1,24 +1,24 @@
-package uni.ruse.welearn.welearn.services;
+package uni.ruse.welearn.welearn.service;
 
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import uni.ruse.welearn.welearn.model.Group;
+import uni.ruse.welearn.welearn.model.Role;
 import uni.ruse.welearn.welearn.model.User;
 import uni.ruse.welearn.welearn.model.auth.ApiResponse;
-import uni.ruse.welearn.welearn.model.dto.UserRequestDto;
-import uni.ruse.welearn.welearn.model.dto.UserResponseDto;
 import uni.ruse.welearn.welearn.repository.RoleRepository;
 import uni.ruse.welearn.welearn.repository.UserRepository;
 import uni.ruse.welearn.welearn.util.WeLearnException;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 /**
  * Service that wires all related repositories and methods for processing and
@@ -27,6 +27,7 @@ import java.util.stream.Collectors;
  * @author petar ivanov
  */
 @Service(value = "userService")
+@Slf4j
 public class UserService implements UserDetailsService {
     @Autowired
     private BCryptPasswordEncoder bcryptEncoder;
@@ -34,6 +35,8 @@ public class UserService implements UserDetailsService {
     private UserRepository userRepository;
     @Autowired
     private RoleRepository roleRepository;
+    @Autowired
+    private GroupService groupService;
 
     /**
      *
@@ -52,7 +55,7 @@ public class UserService implements UserDetailsService {
     }
 
     private List<SimpleGrantedAuthority> getAuthority() {
-        return Arrays.asList(new SimpleGrantedAuthority("ROLE_ADMIN"));
+        return Collections.singletonList(new SimpleGrantedAuthority("ROLE_ADMIN"));
     }
 
     /**
@@ -60,8 +63,8 @@ public class UserService implements UserDetailsService {
      *
      * @return List with users objects
      */
-    public List<UserResponseDto> findAllUsers() {
-        return userRepository.findAll().stream().map(UserResponseDto::new).collect(Collectors.toList());
+    public List<User> findAllUsers() {
+        return userRepository.findAll();
     }
 
     /**
@@ -70,7 +73,7 @@ public class UserService implements UserDetailsService {
      * @param id which user
      * @return {@link User}
      */
-    public User deleteUser(String id) {
+    public User deleteUser(String id) throws WeLearnException {
         User user = findUserById(id);
         user.setDeleted(1);
         return userRepository.save(user);
@@ -92,9 +95,12 @@ public class UserService implements UserDetailsService {
      * @param id
      * @return user or null
      */
-    public User findUserById(String id) {
+    public User findUserById(String id) throws WeLearnException {
         Optional<User> optionalUser = userRepository.findByUserId(id);
-        return optionalUser.orElse(null);
+        if (optionalUser.isEmpty()) {
+            throw new WeLearnException("User not found");
+        }
+        return optionalUser.get();
     }
 
     /**
@@ -109,46 +115,62 @@ public class UserService implements UserDetailsService {
     /**
      * Updates user data
      *
-     * @param userDto
+     * @param user
      * @return
      */
-    public User updateUser(User userDto) {
-        User user = findUserById(userDto.getUserId());
-        if (user != null) {
-
-
-            if (userDto.getPassword() == null) {
-                System.out.println("Pass is the same..");
+    public User updateUser(User user) throws WeLearnException {
+        User existingUser = findUserById(user.getUserId());
+        if (existingUser != null) {
+            if (user.getPassword() == null) {
+                log.info("Password is not changed for " + user.getUserId());
             } else {
-                System.out.println("Changed pass " + userDto.getPassword());
-                user.setPassword(bcryptEncoder.encode(userDto.getPassword()));
+                log.info("Changed pass " + user.getPassword());
+                existingUser.setPassword(bcryptEncoder.encode(user.getPassword()));
             }
-
-            userRepository.save(user);
+            if (!user.getEmail().isBlank()) {
+                existingUser.setEmail(user.getEmail());
+            }
+            if (!user.getAddress().isBlank()) {
+                existingUser.setAddress(user.getAddress());
+            }
+            if (user.getBirthdate() != null) {
+                existingUser.setBirthdate(user.getBirthdate());
+            }
+            if (!user.getPhoneNumber().isBlank()) {
+                existingUser.setPhoneNumber(user.getPhoneNumber());
+            }
+            if (user.getRole() != null) {
+                Optional<Role> role = roleRepository.findById(user.getRole().getId());
+                if (role.isEmpty()) {
+                    throw new WeLearnException("Role not found");
+                } else {
+                    existingUser.setRole(role.get());
+                }
+            }
+            if(user.getGroup() != null){
+                Group existingGroup = groupService.findOne(user.getGroup().getGroupId());
+                existingUser.setGroup(existingGroup);
+            }
+            existingUser = userRepository.save(existingUser);
         }
-        return userDto;
+        return existingUser;
     }
 
     /**
-     * Adds {@link User} and build sresponse for frontend
+     * Adds {@link User} and builds response for frontend
      *
-     * @param userRequestDto {@link User}
+     * @param user {@link User}
      * @return {@link ApiResponse}
      */
-    public UserResponseDto addUser(UserRequestDto userRequestDto) throws WeLearnException {
-        if (userRepository.findByUsername(userRequestDto.getUsername()).isEmpty()) {
-            User newUser = new User(userRequestDto, roleRepository);
-            newUser.setPassword(bcryptEncoder.encode(userRequestDto.getPassword()));
-            newUser.setDeleted(0);
-            newUser.setLoggedIn(0);
-
-            newUser = userRepository.save(newUser);
-
-            return new UserResponseDto(newUser);
+    public User addUser(User user) throws WeLearnException {
+        if (userRepository.findByUsername(user.getUsername()).isEmpty()) {
+            user.setPassword(bcryptEncoder.encode(user.getPassword()));
+            user.setDeleted(0);
+            user.setLoggedIn(0);
+            return userRepository.save(user);
         } else {
             throw new WeLearnException("User already exists");
         }
-
     }
 
     /**
@@ -157,15 +179,10 @@ public class UserService implements UserDetailsService {
      * @param id user id
      * @return 1 if succesfull
      */
-    public int logout(String id) {
-        User u = findUserById(id);
-        if (u == null) {
-            return 0;
-        } else {
-            u.setLoggedIn(0);
-            u = userRepository.save(u);
-            return 1;
-        }
+    public User logout(String id) throws WeLearnException {
+        User user = findUserById(id);
+        user.setLoggedIn(0);
+        return userRepository.save(user);
     }
 
     /**

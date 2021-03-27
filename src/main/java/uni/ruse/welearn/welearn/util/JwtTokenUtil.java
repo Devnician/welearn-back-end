@@ -3,6 +3,7 @@ package uni.ruse.welearn.welearn.util;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -10,8 +11,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 import uni.ruse.welearn.welearn.model.Role;
 import uni.ruse.welearn.welearn.model.User;
-import uni.ruse.welearn.welearn.services.RoleService;
-import uni.ruse.welearn.welearn.services.UserService;
+import uni.ruse.welearn.welearn.service.RoleService;
+import uni.ruse.welearn.welearn.service.UserService;
 
 import java.io.Serializable;
 import java.util.Arrays;
@@ -31,7 +32,9 @@ import static uni.ruse.welearn.welearn.util.Constants.USER_ID;
  * @author petar ivanov
  */
 @Component
+@Slf4j
 public class JwtTokenUtil implements Serializable {
+
     @Autowired
     private BCryptPasswordEncoder bcryptEncoder;
     @Autowired
@@ -50,10 +53,10 @@ public class JwtTokenUtil implements Serializable {
      * @return
      */
     public String createAdminToken() {
-        Role r = new Role();
-        r.setDescription("administrator");
-        r.setRole("administrator");
-        Role role = roleService.saveRole(r);
+        Role newRole = new Role();
+        newRole.setDescription("administrator");
+        newRole.setRole("administrator");
+        Role role = roleService.saveRole(newRole);
         User user = new User();
         user.setFirstName("Admin");
         user.setLastName("Adminov");
@@ -89,7 +92,6 @@ public class JwtTokenUtil implements Serializable {
     }
 
     private Claims getAllClaimsFromToken(String token) {
-        System.out.println(Jwts.parser().setSigningKey(SIGNING_KEY).parseClaimsJws(token).getBody());
         return Jwts.parser().setSigningKey(SIGNING_KEY).parseClaimsJws(token).getBody();
     }
 
@@ -107,12 +109,10 @@ public class JwtTokenUtil implements Serializable {
         claims.put(ROLE_ID, user.getRole().getId());
         claims.put(USERNAME, user.getUsername());
 
-        String token = Jwts.builder().setClaims(claims).setIssuer("com.mse.welearn")
+        return Jwts.builder().setClaims(claims).setIssuer("uni.ruse.welearn")
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + ACCESS_TOKEN_VALIDITY_SECONDS * 1000))
                 .signWith(SignatureAlgorithm.HS256, SIGNING_KEY).compact();
-
-        return token;
     }
 
     public boolean validateToken(String token, UserDetails userDetails) {

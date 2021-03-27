@@ -1,5 +1,6 @@
 package uni.ruse.welearn.welearn.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,7 +10,15 @@ import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
+import org.springframework.beans.BeanUtils;
+import uni.ruse.welearn.welearn.model.dto.DisciplineDto;
+import uni.ruse.welearn.welearn.service.DisciplineService;
+import uni.ruse.welearn.welearn.service.EventService;
+import uni.ruse.welearn.welearn.service.GroupService;
+import uni.ruse.welearn.welearn.service.ResourceService;
+import uni.ruse.welearn.welearn.service.UserService;
 import uni.ruse.welearn.welearn.util.AuditedClass;
+import uni.ruse.welearn.welearn.util.WeLearnException;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -20,6 +29,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * @author Ivelin Dimitrov
@@ -42,20 +52,51 @@ public class Discipline extends AuditedClass {
     private String name;
 
     @OneToMany(mappedBy = "discipline", fetch = FetchType.EAGER)
-    @JsonManagedReference
     @LazyCollection(LazyCollectionOption.FALSE)
+    @JsonManagedReference
     private Set<Resource> resources;
 
-    @ManyToMany
-    @JoinColumn(name = "group_id")
+    @ManyToMany(mappedBy = "disciplines", fetch = FetchType.LAZY)
+    @LazyCollection(LazyCollectionOption.FALSE)
     @JsonManagedReference
     private Set<Group> group;
 
-    @Override
-    public String toString() {
-        return "Dsicipline{" +
-                "id='" + id + '\'' +
-                ", name='" + name + '\'' +
-                '}';
+    @ManyToOne
+    @JsonBackReference
+    @JoinColumn(name = "teacher_id")
+    private User teacher;
+
+    @ManyToOne
+    @JsonBackReference
+    @JoinColumn(name = "assistant_id")
+    private User assistant;
+
+    public Discipline(
+            DisciplineDto disciplineDto,
+            GroupService groupService,
+            DisciplineService disciplineService,
+            ResourceService resourceService,
+            UserService userService,
+            EventService eventService
+    ) throws WeLearnException {
+        if (disciplineDto != null) {
+            BeanUtils.copyProperties(disciplineDto, this);
+            if (disciplineDto.getResourceIds() != null) {
+                resources = disciplineDto.getResourceIds().stream().map(it -> {
+                    try {
+                        return resourceService.findById(it);
+                    } catch (WeLearnException e) {
+                        e.printStackTrace();
+                    }
+                    return null;
+                }).collect(Collectors.toSet());
+            }
+            if (disciplineDto.getTeacher() != null) {
+                teacher = new User(disciplineDto.getTeacher(), groupService, disciplineService, userService, eventService);
+            }
+            if (disciplineDto.getAssistant() != null) {
+                assistant = new User(disciplineDto.getAssistant(), groupService, disciplineService, userService, eventService);
+            }
+        }
     }
 }

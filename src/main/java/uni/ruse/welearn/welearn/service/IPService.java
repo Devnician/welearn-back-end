@@ -1,7 +1,7 @@
 /**
  *
  */
-package uni.ruse.welearn.welearn.services;
+package uni.ruse.welearn.welearn.service;
 
 import org.springframework.stereotype.Service;
 

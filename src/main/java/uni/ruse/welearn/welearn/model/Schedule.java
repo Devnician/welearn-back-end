@@ -1,5 +1,6 @@
 package uni.ruse.welearn.welearn.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,7 +10,13 @@ import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
+import org.springframework.beans.BeanUtils;
+import uni.ruse.welearn.welearn.model.dto.ScheduleDto;
+import uni.ruse.welearn.welearn.service.DisciplineService;
+import uni.ruse.welearn.welearn.service.GroupService;
+import uni.ruse.welearn.welearn.service.ResourceService;
 import uni.ruse.welearn.welearn.util.AuditedClass;
+import uni.ruse.welearn.welearn.util.WeLearnException;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -22,6 +29,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import java.sql.Time;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * @author Ivelin Dimitrov
@@ -45,26 +53,43 @@ public class Schedule extends AuditedClass {
 
     @ManyToOne
     @JoinColumn(name = "group_id")
-    @JsonManagedReference
+    @JsonBackReference
     private Group group;
 
     @OneToOne(cascade = CascadeType.DETACH)
+    @JsonBackReference
     @JoinColumn(name = "discipline_id", referencedColumnName = "id")
     private Discipline discipline;
 
     @OneToMany(mappedBy = "schedule", fetch = FetchType.LAZY)
-    @JsonManagedReference
     @LazyCollection(LazyCollectionOption.FALSE)
+    @JsonManagedReference
     private Set<Resource> resources;
 
-
-    @Override
-    public String toString() {
-        return "\nSchedule{" +
-                "id='" + id + '\'' +
-                ", startTime=" + startTime +
-                ", endTime=" + endTime +
-                ", disciplineMapping=" + discipline +
-                '}';
+    public Schedule(
+            ScheduleDto scheduleDto,
+            GroupService groupService,
+            DisciplineService disciplineService,
+            ResourceService resourceService
+    ) throws WeLearnException {
+        if (scheduleDto != null) {
+            BeanUtils.copyProperties(scheduleDto, this);
+            if (scheduleDto.getGroupId() != null) {
+                group = groupService.findOne(scheduleDto.getGroupId());
+            }
+            if (scheduleDto.getDisciplineId() != null) {
+                discipline = disciplineService.getDisciplineById(scheduleDto.getDisciplineId());
+            }
+            if (scheduleDto.getResourceIds() != null) {
+                resources = scheduleDto.getResourceIds().stream().map(id1 -> {
+                    try {
+                        return resourceService.findById(id1);
+                    } catch (WeLearnException e) {
+                        e.printStackTrace();
+                    }
+                    return null;
+                }).collect(Collectors.toSet());
+            }
+        }
     }
 }

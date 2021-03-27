@@ -11,22 +11,26 @@ import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 import org.springframework.beans.BeanUtils;
-import uni.ruse.welearn.welearn.model.dto.UserRequestDto;
-import uni.ruse.welearn.welearn.repository.RoleRepository;
+import uni.ruse.welearn.welearn.model.dto.UserDto;
+import uni.ruse.welearn.welearn.service.DisciplineService;
+import uni.ruse.welearn.welearn.service.EventService;
+import uni.ruse.welearn.welearn.service.GroupService;
+import uni.ruse.welearn.welearn.service.UserService;
 import uni.ruse.welearn.welearn.util.AuditedClass;
 import uni.ruse.welearn.welearn.util.WeLearnException;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
-import java.util.Optional;
+import java.sql.Timestamp;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * @author Ivelin Dimitrov
@@ -50,37 +54,96 @@ public class User extends AuditedClass {
     private String lastName;
     private String username;
     private String password;
+    private String address;
+    private Timestamp birthdate;
+    private String phoneNumber;
+    private String middleName;
     @Column(columnDefinition = "integer default 0")
     private int loggedIn;
     private int deleted;
 
     @ManyToOne
     @JoinColumn(name = "group_id")
-    @JsonManagedReference
+    @JsonBackReference
     private Group group;
 
     @OneToMany(mappedBy = "user")
-    @JsonBackReference
     @LazyCollection(LazyCollectionOption.FALSE)
+    @JsonManagedReference
     private Set<EvaluationMark> evaluationMarks;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "role_id")
-    @JsonManagedReference
+    @JsonBackReference
     private Role role;
 
     @ManyToMany(mappedBy = "blacklist")
     @LazyCollection(LazyCollectionOption.FALSE)
-    @JsonManagedReference
     private Set<Event> blacklistedEvents;
 
-    public User(UserRequestDto userRequestDto, RoleRepository roleRepository) throws WeLearnException {
-        Optional<Role> role = roleRepository.findById(userRequestDto.getRoleId());
-        if (role.isPresent()) {
-            BeanUtils.copyProperties(userRequestDto, this);
-            this.setRole(role.get());
-        } else {
-            throw new WeLearnException("Role is not found");
+    @OneToMany(mappedBy = "teacher", fetch = FetchType.LAZY)
+    @LazyCollection(LazyCollectionOption.FALSE)
+    @JsonManagedReference
+    private Set<Discipline> taughtDiscipline;
+
+    @OneToMany(mappedBy = "assistant", fetch = FetchType.LAZY)
+    @LazyCollection(LazyCollectionOption.FALSE)
+    @JsonManagedReference
+    private Set<Discipline> assistedDiscipline;
+
+    public User(
+            UserDto userDto,
+            GroupService groupService,
+            DisciplineService disciplineService,
+            UserService userService,
+            EventService eventService
+    ) throws WeLearnException {
+        if (userDto != null) {
+            BeanUtils.copyProperties(userDto, this);
+            if (userDto.getBlackListedEventIds() != null) {
+                blacklistedEvents = userDto.getBlackListedEventIds().stream().map(it -> {
+                    try {
+                        return eventService.findById(it);
+                    } catch (WeLearnException e) {
+                        e.printStackTrace();
+                    }
+                    return null;
+                }).collect(Collectors.toSet());
+            }
+            role = new Role(userDto.getRole(), userService);
+            if (userDto.getGroupId() != null) {
+                group = groupService.findOne(userDto.getGroupId());
+            }
+            if (userDto.getEvaluationMarks() != null) {
+                evaluationMarks = userDto.getEvaluationMarks().stream().map(it -> {
+                    try {
+                        return new EvaluationMark(it, groupService, disciplineService, userService);
+                    } catch (WeLearnException e) {
+                        e.printStackTrace();
+                    }
+                    return null;
+                }).collect(Collectors.toSet());
+            }
+            if (userDto.getTaughtDisciplineIds() != null) {
+                taughtDiscipline = userDto.getTaughtDisciplineIds().stream().map(disciplineId -> {
+                    try {
+                        return disciplineService.getDisciplineById(disciplineId);
+                    } catch (WeLearnException e) {
+                        e.printStackTrace();
+                    }
+                    return null;
+                }).collect(Collectors.toSet());
+            }
+            if (userDto.getAssistedDisciplineIds() != null) {
+                assistedDiscipline = userDto.getAssistedDisciplineIds().stream().map(disciplineId -> {
+                    try {
+                        return disciplineService.getDisciplineById(disciplineId);
+                    } catch (WeLearnException e) {
+                        e.printStackTrace();
+                    }
+                    return null;
+                }).collect(Collectors.toSet());
+            }
         }
     }
 }

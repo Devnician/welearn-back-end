@@ -1,10 +1,11 @@
 package uni.ruse.welearn.welearn.components;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
-import uni.ruse.welearn.welearn.services.IPService;
+import uni.ruse.welearn.welearn.service.IPService;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -12,6 +13,7 @@ import java.io.IOException;
 import java.io.Serializable;
 
 @Component
+@Slf4j
 public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint, Serializable {
     @Autowired
     private IPService ipService;
@@ -22,7 +24,7 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint, Se
     public void commence(HttpServletRequest request, HttpServletResponse response,
                          AuthenticationException authException) throws IOException {
         String ip = ipService.getClientIpAddressFromRequest(request);
-        System.out.println("Unauthorized. The ban is near...&-))" + ip);
+        log.info("Unauthorized. The ban is near...&-))" + ip);
         response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
     }
 }

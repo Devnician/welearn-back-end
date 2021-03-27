@@ -1,5 +1,6 @@
 package uni.ruse.welearn.welearn.config;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -25,6 +26,7 @@ import javax.annotation.Resource;
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
+@Slf4j
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Resource(name = "userService")
@@ -52,7 +54,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         // http.requiresChannel().anyRequest().requiresSecure();
-        System.out.println("Web security configure..");
+        log.info("Web security configure..");
         http.cors().and().csrf().disable().authorizeRequests().antMatchers("/token/*", "/welearn/**").permitAll()
                 .anyRequest().authenticated().and().exceptionHandling().authenticationEntryPoint(unauthorizedHandler)
                 .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);

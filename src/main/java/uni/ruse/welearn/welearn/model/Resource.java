@@ -1,14 +1,19 @@
 package uni.ruse.welearn.welearn.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
+import org.springframework.beans.BeanUtils;
+import uni.ruse.welearn.welearn.model.dto.ResourceDto;
+import uni.ruse.welearn.welearn.service.DisciplineService;
+import uni.ruse.welearn.welearn.service.GroupService;
+import uni.ruse.welearn.welearn.service.ScheduleService;
 import uni.ruse.welearn.welearn.util.AuditedClass;
+import uni.ruse.welearn.welearn.util.WeLearnException;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -40,7 +45,7 @@ public class Resource extends AuditedClass {
 
     @ManyToOne
     @JoinColumn(name = "group_id")
-    @JsonManagedReference
+    @JsonBackReference
     private Group group;
 
     @ManyToOne
@@ -53,15 +58,23 @@ public class Resource extends AuditedClass {
     @JsonBackReference
     private Schedule schedule;
 
-
-    @Override
-    public String toString() {
-        return "\nResource{" +
-                "resourceId='" + resourceId + '\'' +
-                ", name='" + name + '\'' +
-                ", type='" + type + '\'' +
-                ", dirPath='" + dirPath + '\'' +
-                ", accessibleAll=" + accessibleAll +
-                '}';
+    public Resource(
+            ResourceDto resourceDto,
+            ScheduleService scheduleService,
+            DisciplineService disciplineService,
+            GroupService groupService
+    ) throws WeLearnException {
+        if (resourceDto != null) {
+            BeanUtils.copyProperties(resourceDto, this);
+            if (resourceDto.getScheduleId() != null) {
+                schedule = scheduleService.findById(resourceDto.getScheduleId());
+            }
+            if (resourceDto.getDisciplineId() != null) {
+                discipline = disciplineService.getDisciplineById(resourceDto.getDisciplineId());
+            }
+            if (resourceDto.getGroupId() != null) {
+                group = groupService.findOne(resourceDto.getGroupId());
+            }
+        }
     }
 }
