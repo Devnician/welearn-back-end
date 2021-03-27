@@ -28,6 +28,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import java.sql.Timestamp;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -54,7 +55,7 @@ public class User extends AuditedClass {
     private String username;
     private String password;
     private String address;
-    private String birthdate;
+    private Timestamp birthdate;
     private String phoneNumber;
     private String middleName;
     @Column(columnDefinition = "integer default 0")

@@ -133,7 +133,7 @@ public class UserService implements UserDetailsService {
             if (!user.getAddress().isBlank()) {
                 existingUser.setAddress(user.getAddress());
             }
-            if (!user.getBirthdate().isBlank()) {
+            if (user.getBirthdate() != null) {
                 existingUser.setBirthdate(user.getBirthdate());
             }
             if (!user.getPhoneNumber().isBlank()) {

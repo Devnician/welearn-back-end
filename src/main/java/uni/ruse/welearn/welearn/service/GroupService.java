@@ -19,6 +19,8 @@ public class GroupService {
 
     @Autowired
     private GroupRepository groupRepository;
+    @Autowired
+    private UserService userService;
 
     public Group findOne(String groupId) throws WeLearnException {
         Optional<Group> group = groupRepository.findById(groupId);
