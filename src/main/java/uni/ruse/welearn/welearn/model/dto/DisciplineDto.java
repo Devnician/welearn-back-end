@@ -8,6 +8,7 @@ import org.springframework.beans.BeanUtils;
 import uni.ruse.welearn.welearn.model.Discipline;
 import uni.ruse.welearn.welearn.model.Resource;
 
+import java.sql.Timestamp;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -24,6 +25,8 @@ public class DisciplineDto {
     private Set<String> resourceIds;
     private UserDto teacher;
     private UserDto assistant;
+    private Timestamp creationDate;
+    private Timestamp modifiedDate;
 
     public DisciplineDto(Discipline discipline) {
         if (discipline != null) {

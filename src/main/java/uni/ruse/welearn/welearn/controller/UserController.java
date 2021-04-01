@@ -69,6 +69,17 @@ public class UserController {
                 userService.findAllUsers().stream().map(UserDto::new).collect(Collectors.toList()));
     }
 
+    /**
+     * Fetch users by role id
+     * @param id identifier of {@link uni.ruse.welearn.welearn.model.Role}
+     * @return  {@link ApiResponse}
+     */
+    @GetMapping("/role/{id}")
+    public ApiResponse<List<UserDto>> listUser(@PathVariable long id) {
+        return new ApiResponse<>(HttpStatus.OK.value(), "User list fetched successfully.",
+                userService.findAllUsersByRoleID(id).stream().map(UserDto::new).collect(Collectors.toList()));
+    }
+
     @GetMapping("/{id}")
     public ApiResponse<UserDto> getUser(
             @PathVariable String id

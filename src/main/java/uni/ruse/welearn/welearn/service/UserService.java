@@ -68,6 +68,15 @@ public class UserService implements UserDetailsService {
     }
 
     /**
+     * Lists users with given role id
+     * @param roleId
+     * @return List with users objects
+     */
+    public List<User> findAllUsersByRoleID(long roleId) {
+        return userRepository.findAllByRoleId(roleId);
+    }
+
+    /**
      * Logical delete
      *
      * @param id which user
@@ -151,6 +160,10 @@ public class UserService implements UserDetailsService {
                 Group existingGroup = groupService.findOne(user.getGroup().getGroupId());
                 existingUser.setGroup(existingGroup);
             }
+            existingUser.setFirstName(user.getFirstName());
+            existingUser.setMiddleName(user.getMiddleName());
+            existingUser.setLastName(user.getLastName());
+
             existingUser = userRepository.save(existingUser);
         }
         return existingUser;

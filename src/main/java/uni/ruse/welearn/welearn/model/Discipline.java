@@ -28,6 +28,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import java.sql.Timestamp;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -70,6 +71,9 @@ public class Discipline extends AuditedClass {
     @JsonBackReference
     @JoinColumn(name = "assistant_id")
     private User assistant;
+
+    private Timestamp creationDate;
+    private Timestamp modifiedDate;
 
     public Discipline(
             DisciplineDto disciplineDto,

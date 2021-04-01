@@ -65,6 +65,14 @@ public class DisciplineController {
                 )));
     }
 
+    @PostMapping("/update")
+    public ApiResponse<DisciplineDto> updateDiscipline(@RequestBody DisciplineDto disciplineRequestDto) throws WeLearnException {
+        return new ApiResponse<>(HttpStatus.OK.value(), "Discipline updated successfully",
+                new DisciplineDto(disciplineService.editDiscipline(
+                        new Discipline(disciplineRequestDto, groupService, disciplineService, resourceService, userService, eventService)
+                )));
+    }
+
     @PutMapping
     public ApiResponse<DisciplineDto> editGroup(
             @RequestBody DisciplineDto disciplineResponseDto

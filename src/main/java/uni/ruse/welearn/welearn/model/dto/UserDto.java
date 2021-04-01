@@ -9,6 +9,7 @@ import uni.ruse.welearn.welearn.model.Discipline;
 import uni.ruse.welearn.welearn.model.Event;
 import uni.ruse.welearn.welearn.model.User;
 
+import java.sql.Timestamp;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -27,7 +28,7 @@ public class UserDto {
     private String username;
     private String password;
     private String address;
-    private String birthdate;
+    private Timestamp birthdate;
     private String phoneNumber;
     private String middleName;
     private int loggedIn;
