@@ -47,30 +47,6 @@ public class JwtTokenUtil implements Serializable {
      */
     private static final long serialVersionUID = -517125042817294278L;
 
-    /**
-     * Generate administrator token
-     *
-     * @return
-     */
-    public String createAdminToken() {
-        Role role = new Role();
-        role.setRole("administrator");
-        role.setRoleBg("администратор");
-        role.setDescription("administrator");
-        role.setDescriptionBg("администрира системата");
-        role.setPermissions("[[2,1,1,1,0]]");
-        role = roleService.saveRole(role);
-        User user = new User();
-        user.setFirstName("Иван");
-        user.setLastName("Иванов");
-        user.setUsername("admin");
-        user.setPassword(bcryptEncoder.encode("admin"));
-        user.setRole(role);
-        user.setEmail("example@email.com");
-        userService.saveUser(user);
-        return generateToken(user, role);
-    }
-
     public String getUsernameFromToken(String token) {
         return getClaimFromToken(token, Claims::getSubject);
     }

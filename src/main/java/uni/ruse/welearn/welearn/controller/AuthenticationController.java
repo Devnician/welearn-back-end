@@ -41,17 +41,6 @@ public class AuthenticationController {
     private RoleService roleService;
 
     /**
-     * Creates super user and gets administrator token.
-     *
-     * @return Token
-     */
-    @GetMapping("/test")
-    public String getAdminToken() {
-        // TODO comment this when finish!!
-        return jwtTokenUtil.createAdminToken();
-    }
-
-    /**
      * Rest method for token generation
      *
      * @param loginUser {@link LoginUser}
@@ -99,5 +88,4 @@ public class AuthenticationController {
                 user.getRole().getId()
         ));
     }
-
 }
