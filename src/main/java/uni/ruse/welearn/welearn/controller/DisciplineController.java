@@ -1,5 +1,7 @@
 package uni.ruse.welearn.welearn.controller;
 
+import java.util.List;
+import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,9 +23,6 @@ import uni.ruse.welearn.welearn.service.GroupService;
 import uni.ruse.welearn.welearn.service.ResourceService;
 import uni.ruse.welearn.welearn.service.UserService;
 import uni.ruse.welearn.welearn.util.WeLearnException;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * @author ivelin.dimitrov

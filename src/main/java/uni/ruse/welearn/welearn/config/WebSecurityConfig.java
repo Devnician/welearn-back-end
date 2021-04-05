@@ -1,5 +1,6 @@
 package uni.ruse.welearn.welearn.config;
 
+import javax.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -15,8 +16,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import uni.ruse.welearn.welearn.components.JwtAuthenticationEntryPoint;
-
-import javax.annotation.Resource;
 
 /**
  * The security configuration class
@@ -55,9 +54,24 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         // http.requiresChannel().anyRequest().requiresSecure();
         log.info("Web security configure..");
-        http.cors().and().csrf().disable().authorizeRequests().antMatchers("/token/*", "/welearn/**").permitAll()
-                .anyRequest().authenticated().and().exceptionHandling().authenticationEntryPoint(unauthorizedHandler)
+        http
+                .cors().and()
+                .csrf().disable()
+                .authorizeRequests().antMatchers(
+                "/token/*",
+                "/welearn/**",
+                "/v2/api-docs",
+                "/configuration/ui",
+                "/swagger-resources/**",
+                "/configuration/security",
+                "/swagger-ui.html",
+                "/swagger-ui/",
+                "/swagger-ui/**",
+                "/webjars/**").permitAll()
+                .anyRequest().authenticated().and()
+                .exceptionHandling().authenticationEntryPoint(unauthorizedHandler)
                 .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+
         http.addFilterBefore(authenticationTokenFilterBean(), UsernamePasswordAuthenticationFilter.class);
     }
 
