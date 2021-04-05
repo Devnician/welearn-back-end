@@ -77,11 +77,6 @@ public class AuthenticationController {
             boolean isPassCorrect = bcryptEncoder.matches(loginPass, oldPass);
             if (!isPassCorrect) {
                 return new ApiResponse<>(HttpStatus.OK.value(), "wrong_pass", null);
-            } else {
-                if (user.getLoggedIn() == 1 && StringUtils.isNotBlank(user.getUserId())) {// someone logged in this account
-                    log.info("ADMIN IN DEBUG");
-                    return new ApiResponse<>(HttpStatus.OK.value(), "logged", null);
-                }
             }
         }
 

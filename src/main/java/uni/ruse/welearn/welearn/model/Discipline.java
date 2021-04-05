@@ -72,9 +72,6 @@ public class Discipline extends AuditedClass {
     @JoinColumn(name = "assistant_id")
     private User assistant;
 
-    private Timestamp creationDate;
-    private Timestamp modifiedDate;
-
     public Discipline(
             DisciplineDto disciplineDto,
             GroupService groupService,

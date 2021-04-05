@@ -60,8 +60,8 @@ public class Group extends AuditedClass {
     @ManyToMany
     @JoinTable(
             name = "discipline_group",
-            joinColumns = @JoinColumn(name = "discipline_id"),
-            inverseJoinColumns = @JoinColumn(name = "group_id"))
+            joinColumns = @JoinColumn(name = "group_id"),
+            inverseJoinColumns = @JoinColumn(name = "discipline_id"))
     @LazyCollection(LazyCollectionOption.FALSE)
     @JsonManagedReference
     private Set<Discipline> disciplines;

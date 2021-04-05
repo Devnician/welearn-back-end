@@ -1,5 +1,8 @@
 package uni.ruse.welearn.welearn.service;
 
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,10 +18,6 @@ import uni.ruse.welearn.welearn.model.auth.ApiResponse;
 import uni.ruse.welearn.welearn.repository.RoleRepository;
 import uni.ruse.welearn.welearn.repository.UserRepository;
 import uni.ruse.welearn.welearn.util.WeLearnException;
-
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
 
 /**
  * Service that wires all related repositories and methods for processing and
@@ -156,13 +155,19 @@ public class UserService implements UserDetailsService {
                     existingUser.setRole(role.get());
                 }
             }
-            if(user.getGroup() != null){
+            if (user.getGroup() != null) {
                 Group existingGroup = groupService.findOne(user.getGroup().getGroupId());
                 existingUser.setGroup(existingGroup);
             }
-            existingUser.setFirstName(user.getFirstName());
-            existingUser.setMiddleName(user.getMiddleName());
-            existingUser.setLastName(user.getLastName());
+            if (user.getFirstName() != null) {
+                existingUser.setFirstName(user.getFirstName());
+            }
+            if (user.getMiddleName() != null) {
+                existingUser.setMiddleName(user.getMiddleName());
+            }
+            if (user.getLastName() != null) {
+                existingUser.setLastName(user.getLastName());
+            }
 
             existingUser = userRepository.save(existingUser);
         }

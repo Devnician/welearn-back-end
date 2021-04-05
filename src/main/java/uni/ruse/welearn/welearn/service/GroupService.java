@@ -1,14 +1,15 @@
 package uni.ruse.welearn.welearn.service;
 
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import uni.ruse.welearn.welearn.model.Discipline;
 import uni.ruse.welearn.welearn.model.Group;
 import uni.ruse.welearn.welearn.repository.GroupRepository;
 import uni.ruse.welearn.welearn.util.WeLearnException;
-
-import java.util.List;
-import java.util.Optional;
 
 /**
  * @author ivelin.dimitrov
@@ -21,6 +22,8 @@ public class GroupService {
     private GroupRepository groupRepository;
     @Autowired
     private UserService userService;
+    @Autowired
+    private DisciplineService disciplineService;
 
     public Group findOne(String groupId) throws WeLearnException {
         Optional<Group> group = groupRepository.findById(groupId);
