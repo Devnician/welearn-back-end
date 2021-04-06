@@ -2,6 +2,7 @@ package uni.ruse.welearn.welearn.controller;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import javax.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -51,7 +52,7 @@ public class UserController {
      * @return {@link User}
      */
     @PostMapping(consumes = "application/json", produces = "application/json")
-    public ApiResponse<UserDto> saveUser(@RequestBody UserDto user) throws WeLearnException {
+    public ApiResponse<UserDto> saveUser(@RequestBody @Valid UserDto user) throws WeLearnException {
         return new ApiResponse<>(HttpStatus.OK.value(), "User added successfully",
                 new UserDto(userService.addUser(new User(user, groupService, disciplineService, userService, eventService)))
         );
@@ -104,7 +105,7 @@ public class UserController {
 
     @PutMapping()
     public ApiResponse<UserDto> updateUser(
-            @RequestBody UserDto userDto
+            @RequestBody @Valid UserDto userDto
     ) throws WeLearnException {
         return new ApiResponse<>(HttpStatus.OK.value(), "User updated successfully.", new UserDto(userService.updateUser(
                 new User(userDto, groupService, disciplineService, userService, eventService)

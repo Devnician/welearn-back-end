@@ -1,15 +1,18 @@
 package uni.ruse.welearn.welearn.model.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import java.sql.Timestamp;
+import java.util.Set;
+import java.util.stream.Collectors;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.beans.BeanUtils;
 import uni.ruse.welearn.welearn.model.Event;
-
-import java.sql.Timestamp;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
  * @author ivelin.dimitrov
@@ -20,9 +23,16 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class EventDto {
     private String eventId;
+    @NotBlank
+    @Size(min = 2, max = 30, message = "Name field may be between 2 and 30 symbols long")
     private String name;
+    @NotNull(message = "Start date is mandatory")
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private Timestamp startDate;
+    @NotNull(message = "Start date is mandatory")
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private Timestamp endDate;
+    @NotNull(message = "Type is mandatory")
     private String type;
     private String groupId;
     private Set<UserDto> blacklist;

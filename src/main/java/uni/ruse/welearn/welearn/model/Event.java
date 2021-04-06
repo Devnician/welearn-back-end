@@ -1,7 +1,21 @@
 package uni.ruse.welearn.welearn.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import java.sql.Timestamp;
+import java.util.Set;
+import java.util.stream.Collectors;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -18,17 +32,6 @@ import uni.ruse.welearn.welearn.service.GroupService;
 import uni.ruse.welearn.welearn.service.UserService;
 import uni.ruse.welearn.welearn.util.AuditedClass;
 import uni.ruse.welearn.welearn.util.WeLearnException;
-
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
-import java.sql.Timestamp;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
  * @author Ivelin Dimitrov
@@ -47,9 +50,16 @@ public class Event extends AuditedClass {
             strategy = "uuid2"
     )
     private String eventId;
+    @NotBlank
+    @Size(min = 2, max = 30, message = "Name field may be between 2 and 30 symbols long")
     private String name;
+    @NotNull(message = "Start date is mandatory")
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private Timestamp startDate;
+    @NotNull(message = "Start date is mandatory")
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private Timestamp endDate;
+    @NotNull(message = "Type is mandatory")
     private String type;
 
     @ManyToOne

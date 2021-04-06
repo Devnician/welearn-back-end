@@ -2,6 +2,7 @@ package uni.ruse.welearn.welearn.controller;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import javax.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -57,7 +58,7 @@ public class DisciplineController {
     }
 
     @PostMapping
-    public ApiResponse<DisciplineDto> createDiscipline(@RequestBody DisciplineDto disciplineRequestDto) throws WeLearnException {
+    public ApiResponse<DisciplineDto> createDiscipline(@RequestBody @Valid DisciplineDto disciplineRequestDto) throws WeLearnException {
         return new ApiResponse<>(HttpStatus.OK.value(), "Discipline created successfully",
                 new DisciplineDto(disciplineService.createDiscipline(
                         new Discipline(disciplineRequestDto, groupService, disciplineService, resourceService, userService, eventService)
@@ -66,7 +67,7 @@ public class DisciplineController {
 
     @PutMapping
     public ApiResponse<DisciplineDto> editDiscipline(
-            @RequestBody DisciplineDto disciplineResponseDto
+            @RequestBody @Valid DisciplineDto disciplineResponseDto
     ) throws WeLearnException {
         return new ApiResponse<>(HttpStatus.OK.value(), "Group updated successfully",
                 new DisciplineDto(disciplineService.editDiscipline(

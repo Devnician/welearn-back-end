@@ -1,7 +1,22 @@
 package uni.ruse.welearn.welearn.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import java.sql.Time;
+import java.util.Set;
+import java.util.stream.Collectors;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -17,19 +32,6 @@ import uni.ruse.welearn.welearn.service.GroupService;
 import uni.ruse.welearn.welearn.service.ResourceService;
 import uni.ruse.welearn.welearn.util.AuditedClass;
 import uni.ruse.welearn.welearn.util.WeLearnException;
-
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
-import java.sql.Time;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
  * @author Ivelin Dimitrov
@@ -48,17 +50,23 @@ public class Schedule extends AuditedClass {
             strategy = "uuid2"
     )
     private String id;
+    @NotBlank(message = "Start time is mandatory")
+    @JsonFormat(pattern = "HH:mm")
     private Time startTime;
+    @NotBlank(message = "End time is mandatory")
+    @JsonFormat(pattern = "HH:mm")
     private Time endTime;
 
     @ManyToOne
     @JoinColumn(name = "group_id")
     @JsonBackReference
+    @NotNull(message = "Group is mandatory")
     private Group group;
 
     @OneToOne(cascade = CascadeType.DETACH)
     @JsonBackReference
     @JoinColumn(name = "discipline_id", referencedColumnName = "id")
+    @NotNull(message = "Discipline is mandatory")
     private Discipline discipline;
 
     @OneToMany(mappedBy = "schedule", fetch = FetchType.LAZY)

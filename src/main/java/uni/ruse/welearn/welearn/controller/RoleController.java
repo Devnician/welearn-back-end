@@ -2,6 +2,7 @@ package uni.ruse.welearn.welearn.controller;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import javax.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -61,7 +62,7 @@ public class RoleController {
      * @return {@link ApiResponse}
      */
     @PostMapping("/add")
-    public ApiResponse<RoleDto> saveRole(@RequestBody RoleDto role) {
+    public ApiResponse<RoleDto> saveRole(@RequestBody @Valid RoleDto role) {
         return new ApiResponse<>(HttpStatus.OK.value(), "Role saved successfully.", new RoleDto(roleService.saveRole(
                 new Role(role, userService)
         )));
@@ -69,7 +70,7 @@ public class RoleController {
 
     @PutMapping
     public ApiResponse<RoleDto> updateRole(
-            @RequestBody RoleDto roleDto
+            @RequestBody @Valid RoleDto roleDto
     ) {
         return new ApiResponse<>(HttpStatus.OK.value(), "Role edited successfully", new RoleDto(roleService.updateRole(
                 new Role(roleDto, userService)

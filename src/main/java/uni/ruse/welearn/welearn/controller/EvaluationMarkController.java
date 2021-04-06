@@ -2,6 +2,7 @@ package uni.ruse.welearn.welearn.controller;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import javax.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -55,7 +56,7 @@ public class EvaluationMarkController {
 
     @PostMapping
     public ApiResponse<EvaluationMarkDto> createMark(
-            @RequestBody EvaluationMarkDto evaluationMarkDto
+            @RequestBody @Valid EvaluationMarkDto evaluationMarkDto
     ) throws WeLearnException {
         return new ApiResponse<>(HttpStatus.OK.value(), "Mark saved successfully",
                 new EvaluationMarkDto(evaluationMarkService.save(
@@ -65,7 +66,7 @@ public class EvaluationMarkController {
 
     @PutMapping
     public ApiResponse<EvaluationMarkDto> editEvaluationMark(
-            @RequestBody EvaluationMarkDto evaluationMarkDto
+            @RequestBody @Valid EvaluationMarkDto evaluationMarkDto
     ) throws WeLearnException {
         return new ApiResponse<>(HttpStatus.OK.value(), "Mark edited successfully",
                 new EvaluationMarkDto(evaluationMarkService.edit(

@@ -2,6 +2,7 @@ package uni.ruse.welearn.welearn.controller;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import javax.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -63,7 +64,7 @@ public class GroupController {
 
     @PostMapping
     public ApiResponse<GroupDto> saveGroup(
-            @RequestBody GroupDto groupDto
+            @RequestBody @Valid GroupDto groupDto
     ) throws WeLearnException {
         return new ApiResponse<>(HttpStatus.OK.value(), "Group saved successfully",
                 new GroupDto(groupService.save(
@@ -73,7 +74,7 @@ public class GroupController {
 
     @PutMapping
     public ApiResponse<GroupDto> editGroup(
-            @RequestBody GroupDto groupDto
+            @RequestBody @Valid GroupDto groupDto
     ) throws WeLearnException {
         return new ApiResponse<>(HttpStatus.OK.value(), "Group edited successfully",
                 new GroupDto(groupService.edit(

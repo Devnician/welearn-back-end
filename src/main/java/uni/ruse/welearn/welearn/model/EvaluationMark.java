@@ -1,6 +1,16 @@
 package uni.ruse.welearn.welearn.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import java.math.BigDecimal;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.validation.constraints.DecimalMax;
+import javax.validation.constraints.DecimalMin;
+import javax.validation.constraints.Digits;
+import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -14,13 +24,6 @@ import uni.ruse.welearn.welearn.service.GroupService;
 import uni.ruse.welearn.welearn.service.UserService;
 import uni.ruse.welearn.welearn.util.AuditedClass;
 import uni.ruse.welearn.welearn.util.WeLearnException;
-
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import java.math.BigDecimal;
 
 /**
  * @author Ivelin Dimitrov
@@ -39,6 +42,10 @@ public class EvaluationMark extends AuditedClass {
             strategy = "uuid2"
     )
     private String id;
+    @NotNull(message = "Mark Value is mandatory")
+    @DecimalMin(value = "2.0", message = "Mark value may not be lower than 2.0")
+    @DecimalMax(value = "6.0", message = "Mark value may not be higher than 6.0")
+    @Digits(integer=1, fraction=2)
     private BigDecimal markValue;
 
     @ManyToOne
@@ -49,11 +56,13 @@ public class EvaluationMark extends AuditedClass {
     @ManyToOne
     @JoinColumn(name = "discipline_id")
     @JsonBackReference
+    @NotNull(message = "Discipline is mandatory")
     private Discipline discipline;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
     @JsonBackReference
+    @NotNull(message = "User is mandatory")
     private User user;
 
     public EvaluationMark(

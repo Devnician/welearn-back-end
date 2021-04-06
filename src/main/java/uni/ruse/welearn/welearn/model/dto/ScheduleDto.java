@@ -1,5 +1,10 @@
 package uni.ruse.welearn.welearn.model.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import java.sql.Time;
+import java.util.Set;
+import java.util.stream.Collectors;
+import javax.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -7,10 +12,6 @@ import lombok.Setter;
 import org.springframework.beans.BeanUtils;
 import uni.ruse.welearn.welearn.model.Resource;
 import uni.ruse.welearn.welearn.model.Schedule;
-
-import java.sql.Time;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
  * @author ivelin.dimitrov
@@ -21,9 +22,15 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class ScheduleDto {
     private String id;
+    @NotBlank(message = "Start time is mandatory")
+    @JsonFormat(pattern = "HH:mm")
     private Time startTime;
+    @NotBlank(message = "End time is mandatory")
+    @JsonFormat(pattern = "HH:mm")
     private Time endTime;
+    @NotBlank(message = "Group is mandatory")
     private String groupId;
+    @NotBlank(message = "Discipline is mandatory")
     private String disciplineId;
     private Set<String> resourceIds;
 

@@ -1,13 +1,17 @@
 package uni.ruse.welearn.welearn.model.dto;
 
+import java.math.BigDecimal;
+import javax.validation.constraints.DecimalMax;
+import javax.validation.constraints.DecimalMin;
+import javax.validation.constraints.Digits;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.beans.BeanUtils;
 import uni.ruse.welearn.welearn.model.EvaluationMark;
-
-import java.math.BigDecimal;
 
 /**
  * @author ivelin.dimitrov
@@ -18,9 +22,15 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 public class EvaluationMarkDto {
     private String id;
+    @NotNull(message = "Mark Value is mandatory")
+    @DecimalMin(value = "2.0", message = "Mark value may not be lower than 2.0")
+    @DecimalMax(value = "6.0", message = "Mark value may not be higher than 6.0")
+    @Digits(integer=1, fraction=2)
     private BigDecimal markValue;
     private String groupId;
+    @NotBlank(message = "Discipline is mandatory")
     private String disciplineId;
+    @NotBlank(message = "User is mandatory")
     private String userId;
 
     public EvaluationMarkDto(EvaluationMark evaluationMark) {
