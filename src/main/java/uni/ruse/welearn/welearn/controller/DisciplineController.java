@@ -6,6 +6,7 @@ import javax.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import uni.ruse.welearn.welearn.model.Discipline;
-import uni.ruse.welearn.welearn.model.auth.ApiResponse;
 import uni.ruse.welearn.welearn.model.dto.DisciplineDto;
 import uni.ruse.welearn.welearn.service.DisciplineService;
 import uni.ruse.welearn.welearn.service.EventService;
@@ -46,40 +46,40 @@ public class DisciplineController {
     private EventService eventService;
 
     @GetMapping
-    public ApiResponse<List<DisciplineDto>> getDisciplines() {
-        return new ApiResponse<>(HttpStatus.OK.value(), "All disciplines fetched successfully",
-                disciplineService.getDisciplines().stream().map(DisciplineDto::new).collect(Collectors.toList()));
+    public ResponseEntity<List<DisciplineDto>> getDisciplines() {
+        return new ResponseEntity<>(
+                disciplineService.getDisciplines().stream().map(DisciplineDto::new).collect(Collectors.toList()), HttpStatus.OK);
     }
 
     @GetMapping("/{disciplineId}")
-    public ApiResponse<DisciplineDto> getDiscipline(@PathVariable String disciplineId) throws WeLearnException {
-        return new ApiResponse<>(HttpStatus.OK.value(), "Discipline fetched successfully",
-                new DisciplineDto(disciplineService.getDisciplineById(disciplineId)));
+    public ResponseEntity<DisciplineDto> getDiscipline(@PathVariable String disciplineId) throws WeLearnException {
+        return new ResponseEntity<>(
+                new DisciplineDto(disciplineService.getDisciplineById(disciplineId)), HttpStatus.OK);
     }
 
     @PostMapping
-    public ApiResponse<DisciplineDto> createDiscipline(@RequestBody @Valid DisciplineDto disciplineRequestDto) throws WeLearnException {
-        return new ApiResponse<>(HttpStatus.OK.value(), "Discipline created successfully",
+    public ResponseEntity<DisciplineDto> createDiscipline(@RequestBody @Valid DisciplineDto disciplineRequestDto) throws WeLearnException {
+        return new ResponseEntity<>(
                 new DisciplineDto(disciplineService.createDiscipline(
                         new Discipline(disciplineRequestDto, groupService, disciplineService, resourceService, userService, eventService)
-                )));
+                )), HttpStatus.OK);
     }
 
     @PutMapping
-    public ApiResponse<DisciplineDto> editDiscipline(
+    public ResponseEntity<DisciplineDto> editDiscipline(
             @RequestBody @Valid DisciplineDto disciplineResponseDto
     ) throws WeLearnException {
-        return new ApiResponse<>(HttpStatus.OK.value(), "Group updated successfully",
+        return new ResponseEntity<>(
                 new DisciplineDto(disciplineService.editDiscipline(
                         new Discipline(disciplineResponseDto, groupService, disciplineService, resourceService, userService, eventService)
-                )));
+                )), HttpStatus.OK);
     }
 
     @DeleteMapping("/{disciplineId}")
-    public ApiResponse<Boolean> removeDiscipline(
+    public ResponseEntity<Boolean> removeDiscipline(
             @PathVariable String disciplineId
     ) throws WeLearnException {
         disciplineService.removeDiscipine(disciplineId);
-        return new ApiResponse<>(HttpStatus.OK.value(), "Group removed successfully", true);
+        return new ResponseEntity<>(true, HttpStatus.OK);
     }
 }

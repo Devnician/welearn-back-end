@@ -1,11 +1,9 @@
 package uni.ruse.welearn.welearn.controller;
 
-import java.util.List;
-import java.util.stream.Collectors;
-import javax.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,10 +14,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import uni.ruse.welearn.welearn.model.Role;
-import uni.ruse.welearn.welearn.model.auth.ApiResponse;
 import uni.ruse.welearn.welearn.model.dto.RoleDto;
 import uni.ruse.welearn.welearn.service.RoleService;
 import uni.ruse.welearn.welearn.service.UserService;
+
+import javax.validation.Valid;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author ivelin.dimitrov
@@ -38,20 +39,20 @@ public class RoleController {
     /**
      * Lists roles
      *
-     * @return {@link ApiResponse}
+     * @return {@link ResponseEntity}
      */
     @GetMapping()
-    public ApiResponse<List<RoleDto>> listRoles() {
+    public ResponseEntity<List<RoleDto>> listRoles() {
         List<RoleDto> roles = roleService.findAllRoles().stream().map(RoleDto::new).collect(Collectors.toList());
-        return new ApiResponse<>(HttpStatus.OK.value(), "Role list fetched successfully.", roles);
+        return new ResponseEntity<>(roles, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    public ApiResponse<RoleDto> getRoleById(
+    public ResponseEntity<RoleDto> getRoleById(
             @PathVariable Long id
     ) {
-        return new ApiResponse<>(HttpStatus.OK.value(), "Role fetched succesfully",
-                new RoleDto(roleService.findRoleById(id))
+        return new ResponseEntity<>(
+                new RoleDto(roleService.findRoleById(id)), HttpStatus.OK
         );
     }
 
@@ -59,29 +60,29 @@ public class RoleController {
      * Adds new role into db
      *
      * @param role the {@link Role}
-     * @return {@link ApiResponse}
+     * @return {@link ResponseEntity}
      */
     @PostMapping("/add")
-    public ApiResponse<RoleDto> saveRole(@RequestBody @Valid RoleDto role) {
-        return new ApiResponse<>(HttpStatus.OK.value(), "Role saved successfully.", new RoleDto(roleService.saveRole(
+    public ResponseEntity<RoleDto> saveRole(@RequestBody @Valid RoleDto role) {
+        return new ResponseEntity<>(new RoleDto(roleService.saveRole(
                 new Role(role, userService)
-        )));
+        )), HttpStatus.OK);
     }
 
     @PutMapping
-    public ApiResponse<RoleDto> updateRole(
+    public ResponseEntity<RoleDto> updateRole(
             @RequestBody @Valid RoleDto roleDto
     ) {
-        return new ApiResponse<>(HttpStatus.OK.value(), "Role edited successfully", new RoleDto(roleService.updateRole(
+        return new ResponseEntity<>(new RoleDto(roleService.updateRole(
                 new Role(roleDto, userService)
-        )));
+        )), HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
-    public ApiResponse<Boolean> deleteRole(
+    public ResponseEntity<Boolean> deleteRole(
             @PathVariable Long id
     ) {
         roleService.deleteRoleById(id);
-        return new ApiResponse<>(HttpStatus.OK.value(), "Role deleted successfully", true);
+        return new ResponseEntity<>(true, HttpStatus.OK);
     }
 }
