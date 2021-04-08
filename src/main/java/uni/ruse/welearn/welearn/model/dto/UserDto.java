@@ -1,5 +1,14 @@
 package uni.ruse.welearn.welearn.model.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import java.sql.Timestamp;
+import java.util.Set;
+import java.util.stream.Collectors;
+import javax.persistence.Column;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -8,10 +17,6 @@ import org.springframework.beans.BeanUtils;
 import uni.ruse.welearn.welearn.model.Discipline;
 import uni.ruse.welearn.welearn.model.Event;
 import uni.ruse.welearn.welearn.model.User;
-
-import java.sql.Timestamp;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
  * @author ivelin.dimitrov
@@ -22,19 +27,41 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class UserDto {
     private String userId;
+    @NotBlank(message = "Email is mandatory")
+    @Pattern(regexp = "^[^@\\s]+@[^@\\s\\.]+\\.[^@\\.\\s]+$", message = "Email is invalid")
     private String email;
+    @NotBlank(message = "First name is mandatory")
+    @Size(min = 2, max = 30, message = "First name must be between 2 and 30 symbols long")
+    @Pattern(regexp = "([а-яА-Я]{2,})|([a-zA-Z]{2,})", message = "The name contains forbidden symbols")
     private String firstName;
+    @NotBlank(message = "Last name is mandatory")
+    @Size(min = 2, max = 30, message = "Last name must be between 2 and 30 symbols long")
+    @Pattern(regexp = "([а-яА-Я]{2,})|([a-zA-Z]{2,})", message = "The name contains forbidden symbols")
     private String lastName;
+    @NotBlank(message = "Username is mandatory")
+    @Size(min = 3, max = 30, message = "Username must be between 3 and 30 symbols long")
+    @Pattern(regexp = "^[a-zA-Z0-9]*$", message = "Username field accepts only letters and numbers.")
+    @Column(unique = true)
     private String username;
+    @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{6,32}$",
+            message = "Password must be between 6 and 32 symbols. At least one uppercase letter, one lowercase letter, one number and one special character")
     private String password;
+    @Size(min = 2, max = 45, message = "Address length must be between 2 and 45 symbols")
     private String address;
+    @NotNull(message = "Birthdate is mandatory")
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private Timestamp birthdate;
+    @Pattern(regexp = "^(\\+?359\\d{9})|(0\\d{9})$", message = "Phone number is not correct")
     private String phoneNumber;
+    @Size(min = 2, max = 30, message = "Middle name must be between 2 and 30 symbols long")
+    @Pattern(regexp = "([а-яА-Я]{2,})|([a-zA-Z]{2,})", message = "The middle name contains forbidden symbols")
     private String middleName;
+    @Column(columnDefinition = "integer default 0")
     private int loggedIn;
     private int deleted;
     private String groupId;
     private Set<EvaluationMarkDto> evaluationMarks;
+    @NotNull(message = "Role is mandatory")
     private RoleDto role;
     private Set<String> taughtDisciplineIds;
     private Set<String> assistedDisciplineIds;

@@ -19,7 +19,6 @@ import springfox.documentation.service.SecurityReference;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spi.service.contexts.SecurityContext;
 import springfox.documentation.spring.web.plugins.Docket;
-import uni.ruse.welearn.welearn.model.auth.ApiResponse;
 
 /**
  * @author Ivelin Dimitrov
@@ -35,7 +34,6 @@ public class SwaggerConfiguration {
         return new Docket(DocumentationType.SWAGGER_2)
                 .apiInfo(apiInfo())
                 .forCodeGeneration(true)
-                .genericModelSubstitutes(ApiResponse.class)
                 .directModelSubstitute(Timestamp.class, Date.class)
                 .directModelSubstitute(java.sql.Timestamp.class, Date.class)
                 .directModelSubstitute(Time.class, Date.class)

@@ -1,6 +1,17 @@
 package uni.ruse.welearn.welearn.model;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import java.util.Set;
+import java.util.stream.Collectors;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,15 +21,6 @@ import org.springframework.beans.BeanUtils;
 import uni.ruse.welearn.welearn.model.dto.RoleDto;
 import uni.ruse.welearn.welearn.service.UserService;
 import uni.ruse.welearn.welearn.util.WeLearnException;
-
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
  * Model for role that conatins labels and transient List with permissions
@@ -43,12 +45,19 @@ public class Role {
     )
     private long id;
 
+    @NotBlank(message = "Role is mandatory")
+    @Size(min = 3, max = 30, message = "Role may be between 3 and 30 symbols long")
+    @Column(unique = true)
     private String role;
 
+    @Size(min = 3, max = 30, message = "RoleBg may be between 3 and 30 symbols long")
     private String roleBg;
 
+    @NotBlank(message = "Description is mandatory")
+    @Size(min = 3, max = 30, message = "Description may be between 3 and 30 symbols long")
     private String description;
 
+    @Size(min = 3, max = 30, message = "DescriptionBg may be between 3 and 30 symbols long")
     private String descriptionBg;
 
     private String permissions;

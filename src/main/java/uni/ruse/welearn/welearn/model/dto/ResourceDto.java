@@ -1,5 +1,9 @@
 package uni.ruse.welearn.welearn.model.dto;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,9 +20,17 @@ import uni.ruse.welearn.welearn.model.Resource;
 @NoArgsConstructor
 public class ResourceDto {
     private String resourceId;
+    @NotBlank(message = "Name is mandatory")
+    @Size(min = 2, max = 30, message = "Name may be between 2 and 30 symbols long")
+    @Pattern(regexp = "^[a-zA-Z0-9-_]*$", message = "File name my contain only letters, numbers, dash and underscores")
     private String name;
+    @NotBlank(message = "Type is mandatory")
+    @Pattern(regexp = "^(doc)|(docx)|(pdf)|(png)|(jpeg)|(jpg)|(xlsx)|(xls)|(csv)|(ods)|(txt)$", message = "Type is invalid")
     private String type;
+    @NotBlank(message = "Dir path is mandatory")
+    @Size(max = 45, message = "Dir path may be up to 45 symbols long")
     private String dirPath;
+    @NotNull(message = "AccessibleAll is mandatory")
     private Boolean accessibleAll;
     private String groupId;
     private String disciplineId;

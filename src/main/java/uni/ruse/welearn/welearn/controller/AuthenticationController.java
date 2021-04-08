@@ -3,6 +3,7 @@ package uni.ruse.welearn.welearn.controller;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -15,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import uni.ruse.welearn.welearn.model.Role;
 import uni.ruse.welearn.welearn.model.User;
-import uni.ruse.welearn.welearn.model.auth.ApiResponse;
 import uni.ruse.welearn.welearn.model.auth.AuthToken;
 import uni.ruse.welearn.welearn.model.auth.LoginUser;
 import uni.ruse.welearn.welearn.service.RoleService;
@@ -42,20 +42,20 @@ public class AuthenticationController {
      * Rest method for token generation
      *
      * @param loginUser {@link LoginUser}
-     * @return {@link ApiResponse}
+     * @return {@link ResponseEntity}
      * @throws AuthenticationException
      */
     @RequestMapping(value = "/generate", method = RequestMethod.POST)
-    public ApiResponse<AuthToken> register(@RequestBody LoginUser loginUser) throws AuthenticationException {
+    public ResponseEntity<AuthToken> register(@RequestBody LoginUser loginUser) throws AuthenticationException {
 
         final User user = userService.findOne(loginUser.getUsername());
 
         if (user == null) {
-            return new ApiResponse<>(HttpStatus.OK.value(), "wrong_user", null);
+            return new ResponseEntity<>(AuthToken.builder().message("wrong_user").build(), HttpStatus.OK);
         } else {
             if (user.getDeleted() == 1) {
                 log.info("Account is deleted. Please, contact with administrator.");
-                return new ApiResponse<>(HttpStatus.OK.value(), "deleted", null);
+                return new ResponseEntity<>(AuthToken.builder().message("Deleted").build(), HttpStatus.OK);
             }
 
             String oldPass = user.getPassword();
@@ -63,7 +63,7 @@ public class AuthenticationController {
 
             boolean isPassCorrect = bcryptEncoder.matches(loginPass, oldPass);
             if (!isPassCorrect) {
-                return new ApiResponse<>(HttpStatus.OK.value(), "wrong_pass", null);
+                return new ResponseEntity<>(AuthToken.builder().message("Wrong pass").build(), HttpStatus.OK);
             }
         }
 
@@ -77,13 +77,14 @@ public class AuthenticationController {
 
         userService.login(user);
 
-        return new ApiResponse<>(200, "success", new AuthToken(
+        return new ResponseEntity<>(new AuthToken(
+                null,
                 token,
                 user.getUsername(),
                 user.getFirstName(),
                 user.getLastName(),
                 user.getUserId(),
                 user.getRole().getId()
-        ));
+        ), HttpStatus.OK);
     }
 }

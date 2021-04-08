@@ -1,10 +1,9 @@
 package uni.ruse.welearn.welearn.controller;
 
-import java.util.List;
-import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import uni.ruse.welearn.welearn.model.Group;
-import uni.ruse.welearn.welearn.model.auth.ApiResponse;
 import uni.ruse.welearn.welearn.model.dto.GroupDto;
 import uni.ruse.welearn.welearn.service.DisciplineService;
 import uni.ruse.welearn.welearn.service.EventService;
@@ -24,6 +22,10 @@ import uni.ruse.welearn.welearn.service.ResourceService;
 import uni.ruse.welearn.welearn.service.ScheduleService;
 import uni.ruse.welearn.welearn.service.UserService;
 import uni.ruse.welearn.welearn.util.WeLearnException;
+
+import javax.validation.Valid;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author ivelin.dimitrov
@@ -48,45 +50,45 @@ public class GroupController {
     private EventService eventService;
 
     @GetMapping
-    public ApiResponse<List<GroupDto>> findAll() {
-        return new ApiResponse<>(HttpStatus.OK.value(), "Groups successfully fetched",
-                groupService.findAll().stream().map(GroupDto::new).collect(Collectors.toList()));
+    public ResponseEntity<List<GroupDto>> findAll() {
+        return new ResponseEntity<>(
+                groupService.findAll().stream().map(GroupDto::new).collect(Collectors.toList()), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    public ApiResponse<GroupDto> findById(
+    public ResponseEntity<GroupDto> findById(
             @PathVariable String id
     ) throws WeLearnException {
-        return new ApiResponse<>(HttpStatus.OK.value(), "Group fetched successfully",
-                new GroupDto(groupService.findOne(id)));
+        return new ResponseEntity<>(
+                new GroupDto(groupService.findOne(id)), HttpStatus.OK);
     }
 
     @PostMapping
-    public ApiResponse<GroupDto> saveGroup(
-            @RequestBody GroupDto groupDto
+    public ResponseEntity<GroupDto> saveGroup(
+            @RequestBody @Valid GroupDto groupDto
     ) throws WeLearnException {
-        return new ApiResponse<>(HttpStatus.OK.value(), "Group saved successfully",
+        return new ResponseEntity<>(
                 new GroupDto(groupService.save(
                         new Group(groupDto, scheduleService, disciplineService, groupService, resourceService, userService, eventService)
-                )));
+                )), HttpStatus.OK);
     }
 
     @PutMapping
-    public ApiResponse<GroupDto> editGroup(
-            @RequestBody GroupDto groupDto
+    public ResponseEntity<GroupDto> editGroup(
+            @RequestBody @Valid GroupDto groupDto
     ) throws WeLearnException {
-        return new ApiResponse<>(HttpStatus.OK.value(), "Group edited successfully",
+        return new ResponseEntity<>(
                 new GroupDto(groupService.edit(
                         new Group(groupDto, scheduleService, disciplineService, groupService, resourceService, userService, eventService)
-                )));
+                )), HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
-    public ApiResponse<Boolean> deleteGroup(
+    public ResponseEntity<Boolean> deleteGroup(
             @PathVariable String id
     ) throws WeLearnException {
         groupService.delete(id);
-        return new ApiResponse<>(HttpStatus.OK.value(), "Group deleted successfully",
-                true);
+        return new ResponseEntity<>(
+                true, HttpStatus.OK);
     }
 }

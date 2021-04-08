@@ -1,7 +1,25 @@
 package uni.ruse.welearn.welearn.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import java.sql.Timestamp;
+import java.util.Set;
+import java.util.stream.Collectors;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -18,19 +36,6 @@ import uni.ruse.welearn.welearn.service.GroupService;
 import uni.ruse.welearn.welearn.service.UserService;
 import uni.ruse.welearn.welearn.util.AuditedClass;
 import uni.ruse.welearn.welearn.util.WeLearnException;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import java.sql.Timestamp;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
  * @author Ivelin Dimitrov
@@ -49,14 +54,34 @@ public class User extends AuditedClass {
             strategy = "uuid2"
     )
     private String userId;
+    @Column(unique = true)
+    @NotBlank(message = "Email is mandatory")
+    @Pattern(regexp = "^[^@\\s]+@[^@\\s\\.]+\\.[^@\\.\\s]+$", message = "Email is invalid")
     private String email;
+    @NotBlank(message = "First name is mandatory")
+    @Size(min = 2, max = 30, message = "First name must be between 2 and 30 symbols long")
+    @Pattern(regexp = "([а-яА-Я]{2,})|([a-zA-Z]{2,})", message = "The name contains forbidden symbols")
     private String firstName;
+    @NotBlank(message = "Last name is mandatory")
+    @Size(min = 2, max = 30, message = "Last name must be between 2 and 30 symbols long")
+    @Pattern(regexp = "([а-яА-Я]{2,})|([a-zA-Z]{2,})", message = "The name contains forbidden symbols")
     private String lastName;
+    @NotBlank(message = "Username is mandatory")
+    @Size(min = 3, max = 30, message = "Username must be between 3 and 30 symbols long")
+    @Pattern(regexp = "^[a-zA-Z0-9]*$", message = "Username field accepts only letters and numbers.")
+    @Column(unique = true)
     private String username;
+    @NotBlank(message = "Password is mandatory")
     private String password;
+    @Size(min = 2, max = 45, message = "Address length must be between 2 and 45 symbols")
     private String address;
+    @NotNull(message = "Birthdate is mandatory")
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private Timestamp birthdate;
+    @Pattern(regexp = "^(\\+?359\\d{9})|(0\\d{9})$", message = "Phone number is not correct")
     private String phoneNumber;
+    @Size(min = 2, max = 30, message = "Middle name must be between 2 and 30 symbols long")
+    @Pattern(regexp = "([а-яА-Я]{2,})|([a-zA-Z]{2,})", message = "The middle name contains forbidden symbols")
     private String middleName;
     @Column(columnDefinition = "integer default 0")
     private int loggedIn;
@@ -75,6 +100,8 @@ public class User extends AuditedClass {
     @ManyToOne
     @JoinColumn(name = "role_id")
     @JsonBackReference
+    @NotNull(message = "Role is mandatory")
+    @Valid
     private Role role;
 
     @ManyToMany(mappedBy = "blacklist")

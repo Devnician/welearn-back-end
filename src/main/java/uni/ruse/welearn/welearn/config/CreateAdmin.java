@@ -1,5 +1,7 @@
 package uni.ruse.welearn.welearn.config;
 
+import java.sql.Timestamp;
+import java.util.Date;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -47,6 +49,7 @@ public class CreateAdmin {
             user.setPassword(bcryptEncoder.encode("admin"));
             user.setRole(roleService.findRoleByName("administrator"));
             user.setEmail("example@email.com");
+            user.setBirthdate(Timestamp.from(new Date().toInstant()));
             userService.saveUser(user);
         } else {
             log.info("User admin is already present");

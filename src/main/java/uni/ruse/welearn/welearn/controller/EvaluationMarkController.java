@@ -2,9 +2,11 @@ package uni.ruse.welearn.welearn.controller;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import javax.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import uni.ruse.welearn.welearn.model.EvaluationMark;
-import uni.ruse.welearn.welearn.model.auth.ApiResponse;
 import uni.ruse.welearn.welearn.model.dto.EvaluationMarkDto;
 import uni.ruse.welearn.welearn.service.DisciplineService;
 import uni.ruse.welearn.welearn.service.EvaluationMarkService;
@@ -42,42 +43,42 @@ public class EvaluationMarkController {
     private UserService userService;
 
     @GetMapping("/{id}")
-    public ApiResponse<EvaluationMarkDto> getById(
+    public ResponseEntity<EvaluationMarkDto> getById(
             @PathVariable String id
     ) throws WeLearnException {
-        return new ApiResponse<>(HttpStatus.OK.value(), "Evaluation mark retrieved successfully", new EvaluationMarkDto(evaluationMarkService.findById(id)));
+        return new ResponseEntity<>(new EvaluationMarkDto(evaluationMarkService.findById(id)), HttpStatus.OK);
     }
 
     @GetMapping
-    public ApiResponse<List<EvaluationMarkDto>> findAll() {
-        return new ApiResponse<>(HttpStatus.OK.value(), "Marks list retrieved successfully", evaluationMarkService.findAll().stream().map(EvaluationMarkDto::new).collect(Collectors.toList()));
+    public ResponseEntity<List<EvaluationMarkDto>> findAll() {
+        return new ResponseEntity<>(evaluationMarkService.findAll().stream().map(EvaluationMarkDto::new).collect(Collectors.toList()), HttpStatus.OK);
     }
 
     @PostMapping
-    public ApiResponse<EvaluationMarkDto> createMark(
-            @RequestBody EvaluationMarkDto evaluationMarkDto
+    public ResponseEntity<EvaluationMarkDto> createMark(
+            @RequestBody @Valid EvaluationMarkDto evaluationMarkDto
     ) throws WeLearnException {
-        return new ApiResponse<>(HttpStatus.OK.value(), "Mark saved successfully",
+        return new ResponseEntity<>(
                 new EvaluationMarkDto(evaluationMarkService.save(
                         new EvaluationMark(evaluationMarkDto, groupService, disciplineService, userService)
-                )));
+                )), HttpStatus.OK);
     }
 
     @PutMapping
-    public ApiResponse<EvaluationMarkDto> editEvaluationMark(
-            @RequestBody EvaluationMarkDto evaluationMarkDto
+    public ResponseEntity<EvaluationMarkDto> editEvaluationMark(
+            @RequestBody @Valid EvaluationMarkDto evaluationMarkDto
     ) throws WeLearnException {
-        return new ApiResponse<>(HttpStatus.OK.value(), "Mark edited successfully",
+        return new ResponseEntity<>(
                 new EvaluationMarkDto(evaluationMarkService.edit(
                         new EvaluationMark(evaluationMarkDto, groupService, disciplineService, userService)
-                )));
+                )), HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
-    public ApiResponse<Boolean> deleteMark(
+    public ResponseEntity<Boolean> deleteMark(
             @PathVariable String id
     ) throws WeLearnException {
         evaluationMarkService.delete(id);
-        return new ApiResponse<>(HttpStatus.OK.value(), "Mark deleted successfully", true);
+        return new ResponseEntity<>(true, HttpStatus.OK);
     }
 }
