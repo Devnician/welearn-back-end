@@ -16,6 +16,9 @@
     <properties>
         <java.version>11</java.version>
         <version.jackson>2.10.0.pr3</version.jackson>
+        <sonar.projectKey>Devnician_welearn-back-end</sonar.projectKey>
+        <sonar.organization>devnician</sonar.organization>
+        <sonar.host.url>https://sonarcloud.io</sonar.host.url>
     </properties>
     <dependencies>
         <dependency>
@@ -98,6 +101,7 @@
             <artifactId>jjwt</artifactId>
             <version>0.9.0</version>
         </dependency>
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-mail</artifactId>
