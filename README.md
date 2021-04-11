@@ -1,6 +1,16 @@
 # welearn-back-end
 Distance learning project
 
+# Predefined users:
+* Username: admin
+* Username: teacher
+* Username: teacher2
+* Username: student
+* Username: student2
+* Username: observer
+* Password: admiN123+
+
+
 # Prerequisites
 * Maven::latest
 * Docker::latest
