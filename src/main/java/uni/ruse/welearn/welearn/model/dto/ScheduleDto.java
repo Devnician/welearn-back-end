@@ -21,7 +21,6 @@ import uni.ruse.welearn.welearn.model.Schedule;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ScheduleDto {
-    //Test
     private String id;
     @NotBlank(message = "Start time is mandatory")
     @JsonFormat(pattern = "HH:mm")
