@@ -35,10 +35,13 @@ public class CreateAdmin {
             role.setRoleBg("администратор");
             role.setDescription("administrator");
             role.setDescriptionBg("администрира системата");
-            role.setPermissions("[[2,1,1,1,0]]");
+            role.setPermissions("[[2,1,1,1,0],[1,1,1,1,0],[4,1,1,1,0],[5,1,1,1,0],[6,1,1,1,0]]");
             roleService.saveRole(role);
         } else {
             log.info("Role admin is already present");
+            Role role = roleService.findRoleByName("administrator");
+            role.setPermissions("[[2,1,1,1,0],[1,1,1,1,0],[4,1,1,1,0],[5,1,1,1,0],[6,1,1,1,0]]");
+            roleService.saveRole(role);
         }
         if (userService.findOne("admin") == null) {
             log.info("Creating administrator User");
