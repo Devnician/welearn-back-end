@@ -27,6 +27,8 @@ public class DisciplineDto {
     private Set<String> resourceIds;
     private UserDto teacher;
     private UserDto assistant;
+    private String teacherId;
+    private String assistantId;
 
     public DisciplineDto(Discipline discipline) {
         if (discipline != null) {
