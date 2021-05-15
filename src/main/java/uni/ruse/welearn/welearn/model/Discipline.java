@@ -96,9 +96,15 @@ public class Discipline extends AuditedClass {
             }
             if (disciplineDto.getTeacher() != null) {
                 teacher = new User(disciplineDto.getTeacher(), groupService, disciplineService, userService, eventService);
+            } else if (disciplineDto.getTeacherId() != null) {
+                teacher = userService.findUserById(disciplineDto.getTeacherId());
             }
+
+
             if (disciplineDto.getAssistant() != null) {
                 assistant = new User(disciplineDto.getAssistant(), groupService, disciplineService, userService, eventService);
+            } else if (disciplineDto.getAssistantId() != null) {
+                assistant = userService.findUserById(disciplineDto.getAssistantId());
             }
         }
     }
