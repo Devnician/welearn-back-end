@@ -1,7 +1,6 @@
 package uni.ruse.welearn.welearn.service;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -37,16 +36,36 @@ import static java.nio.file.Files.deleteIfExists;
 public class ResourceService {
 
     public static final String MISSING = "missing";
-    @Autowired
-    ResourceRepository resourceRepository;
-    @Autowired
-    JwtTokenUtil jwtTokenUtil;
-    @Autowired
-    UserService userService;
-    @Autowired
-    DisciplineService disciplineService;
-    @Autowired
-    ScheduleService scheduleService;
+    private final ResourceRepository resourceRepository;
+    private final JwtTokenUtil jwtTokenUtil;
+    private final UserService userService;
+    private final DisciplineService disciplineService;
+    private final ScheduleService scheduleService;
+
+    public ResourceService(
+            ResourceRepository resourceRepository,
+            JwtTokenUtil jwtTokenUtil,
+            UserService userService,
+            DisciplineService disciplineService,
+            ScheduleService scheduleService
+    ) {
+        this.resourceRepository = resourceRepository;
+        this.jwtTokenUtil = jwtTokenUtil;
+        this.userService = userService;
+        this.disciplineService = disciplineService;
+        this.scheduleService = scheduleService;
+
+        File dataDirectory = new File(Paths.get("/data/").toString());
+        if (!dataDirectory.exists()) {
+            log.info("Creating data directory");
+            dataDirectory.mkdir();
+        }
+        File resourceDirectory = new File(Paths.get("/data/resources").toString());
+        if (!resourceDirectory.exists()) {
+            log.info("Creating resource directory");
+            resourceDirectory.mkdir();
+        }
+    }
 
     public Resource findById(String id) throws WeLearnException {
         Optional<Resource> optionalResource = resourceRepository.findById(id);
@@ -113,7 +132,7 @@ public class ResourceService {
         return newPath;
     }
 
-    public Resource edit(MultipartFile file, HttpServletRequest req, String disciplineId, String scheduleId, String resourceId,Boolean accessibleAll) throws WeLearnException {
+    public Resource edit(MultipartFile file, HttpServletRequest req, String disciplineId, String scheduleId, String resourceId, Boolean accessibleAll) throws WeLearnException {
         Discipline discipline = !disciplineId.equals(MISSING) ? disciplineService.getDisciplineById(disciplineId) : null;
         Schedule schedule = !scheduleId.equals(MISSING) ? scheduleService.findById(scheduleId) : null;
         Resource existingResource = findById(resourceId);
