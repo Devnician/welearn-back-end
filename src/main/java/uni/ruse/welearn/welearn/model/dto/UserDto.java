@@ -43,8 +43,7 @@ public class UserDto {
     @Pattern(regexp = "^[a-zA-Z0-9]*$", message = "Username field accepts only letters and numbers.")
     @Column(unique = true)
     private String username;
-    @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{6,32}$",
-            message = "Password must be between 6 and 32 symbols. At least one uppercase letter, one lowercase letter, one number and one special character")
+    @NotBlank(message = "Password is mandatory")
     private String password;
     @Size(min = 2, max = 45, message = "Address length must be between 2 and 45 symbols")
     private String address;
