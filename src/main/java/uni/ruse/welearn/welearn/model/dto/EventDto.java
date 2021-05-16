@@ -34,7 +34,9 @@ public class EventDto {
     private Timestamp endDate;
     @NotNull(message = "Type is mandatory")
     private String type;
+    private String description;
     private String groupId;
+    private DisciplineDto discipline;
     private Set<UserDto> blacklist;
 
     public EventDto(Event event) {
@@ -42,6 +44,9 @@ public class EventDto {
             BeanUtils.copyProperties(event, this);
             if (event.getGroup() != null) {
                 groupId = event.getGroup().getGroupId();
+            }
+            if (event.getDiscipline() != null) {
+                discipline = new DisciplineDto(event.getDiscipline());
             }
             if (event.getBlacklist() != null) {
                 blacklist = event.getBlacklist().stream().map(UserDto::new).collect(Collectors.toSet());
