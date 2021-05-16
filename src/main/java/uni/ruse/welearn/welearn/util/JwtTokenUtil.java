@@ -14,14 +14,17 @@ import uni.ruse.welearn.welearn.model.User;
 import uni.ruse.welearn.welearn.service.RoleService;
 import uni.ruse.welearn.welearn.service.UserService;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.function.Function;
 
 import static uni.ruse.welearn.welearn.util.Constants.ACCESS_TOKEN_VALIDITY_SECONDS;
+import static uni.ruse.welearn.welearn.util.Constants.HEADER_STRING;
 import static uni.ruse.welearn.welearn.util.Constants.ROLE_ID;
 import static uni.ruse.welearn.welearn.util.Constants.SIGNING_KEY;
+import static uni.ruse.welearn.welearn.util.Constants.TOKEN_PREFIX;
 import static uni.ruse.welearn.welearn.util.Constants.USERNAME;
 import static uni.ruse.welearn.welearn.util.Constants.USER_ID;
 
@@ -102,6 +105,20 @@ public class JwtTokenUtil implements Serializable {
     private boolean isTokenExpired(String token) {
         final Date expiration = getExpirationDateFromToken(token);
         return expiration.before(new Date());
+    }
+
+    public String getToken(HttpServletRequest req) {
+        String header = req.getHeader(HEADER_STRING);
+        String authToken = null;
+
+        if (header != null && header.startsWith(TOKEN_PREFIX)) {
+            authToken = header.replace(TOKEN_PREFIX, "");
+
+            if (!authToken.isEmpty()) {
+                return authToken;
+            }
+        }
+        return "";
     }
 
 }

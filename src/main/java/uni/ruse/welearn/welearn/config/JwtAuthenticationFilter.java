@@ -57,6 +57,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         if (header != null && header.startsWith(TOKEN_PREFIX)) {
             authToken = header.replace(TOKEN_PREFIX, "");
+
             if (authToken.isEmpty()) {
                 res.sendError(HttpServletResponse.SC_BAD_REQUEST);
                 return;
