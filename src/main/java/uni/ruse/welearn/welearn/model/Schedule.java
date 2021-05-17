@@ -17,6 +17,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -56,6 +58,17 @@ public class Schedule extends AuditedClass {
     @NotBlank(message = "End time is mandatory")
     @JsonFormat(pattern = "HH:mm")
     private Time endTime;
+
+    @NotNull(message = "Days is mandatory")
+    @Pattern(regexp = "^(Monday)|" +
+            "(Tuesday)|" +
+            "(Wednesday)|" +
+            "(Thursday)|" +
+            "(Friday)|" +
+            "(Saturday)|" +
+            "(Sunday)|" +
+            "(text/plain)$", message = "Days has invalid value")
+    private String days;
 
     @ManyToOne
     @JoinColumn(name = "group_id")

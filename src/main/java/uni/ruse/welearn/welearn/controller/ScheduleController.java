@@ -19,8 +19,6 @@ import uni.ruse.welearn.welearn.service.ResourceService;
 @Slf4j
 public class ScheduleController {
     @Autowired
-    private ScheduleDto scheduleDto;
-    @Autowired
     private GroupService groupService;
     @Autowired
     private DisciplineService disciplineService;
