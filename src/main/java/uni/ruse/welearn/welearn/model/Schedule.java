@@ -60,14 +60,6 @@ public class Schedule extends AuditedClass {
     private Time endTime;
 
     @NotNull(message = "Days is mandatory")
-    @Pattern(regexp = "^(Monday)|" +
-            "(Tuesday)|" +
-            "(Wednesday)|" +
-            "(Thursday)|" +
-            "(Friday)|" +
-            "(Saturday)|" +
-            "(Sunday)|" +
-            "(text/plain)$", message = "Days has invalid value")
     private String days;
 
     @ManyToOne
