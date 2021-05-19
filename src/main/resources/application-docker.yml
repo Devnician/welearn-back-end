@@ -8,14 +8,14 @@ spring:
       max-request-size: "12MB"
   datasource:
     url: "jdbc:mysql://mariadb:3306/welearn?stringtype=unspecified&useUnicode=true&characterEncoding=UTF-8"
-    username: "test"
-    password: "test"
+    username: "welearn"
+    password: "welearn"
     driver-class-name: com.mysql.jdbc.Driver
   flyway:
     enabled: true
     url: "jdbc:mysql://mariadb:3306/welearn?stringtype=unspecified"
-    user: "test"
-    password: "test"
+    user: "welearn"
+    password: "welearn"
   jpa:
     hibernate:
       ddl-auto: none

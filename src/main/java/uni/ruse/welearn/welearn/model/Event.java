@@ -13,6 +13,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -29,6 +30,7 @@ import uni.ruse.welearn.welearn.model.dto.EventDto;
 import uni.ruse.welearn.welearn.service.DisciplineService;
 import uni.ruse.welearn.welearn.service.EventService;
 import uni.ruse.welearn.welearn.service.GroupService;
+import uni.ruse.welearn.welearn.service.ResourceService;
 import uni.ruse.welearn.welearn.service.UserService;
 import uni.ruse.welearn.welearn.util.AuditedClass;
 import uni.ruse.welearn.welearn.util.WeLearnException;
@@ -61,11 +63,17 @@ public class Event extends AuditedClass {
     private Timestamp endDate;
     @NotNull(message = "Type is mandatory")
     private String type;
+    private String description;
 
     @ManyToOne
     @JoinColumn(name = "group_id")
     @JsonBackReference
     private Group group;
+
+    @OneToOne
+    @JoinColumn(name = "discipline_id", referencedColumnName = "id")
+    @NotNull(message = "Discipline is mandatory")
+    private Discipline discipline;
 
     @ManyToMany
     @JoinTable(
@@ -82,12 +90,16 @@ public class Event extends AuditedClass {
             GroupService groupService,
             DisciplineService disciplineService,
             UserService userService,
-            EventService eventService
+            EventService eventService,
+            ResourceService resourceService
     ) throws WeLearnException {
         if (eventDto != null) {
             BeanUtils.copyProperties(eventDto, this);
             if (eventDto.getGroupId() != null) {
                 group = groupService.findOne(eventDto.getGroupId());
+            }
+            if (eventDto.getDiscipline() != null) {
+                discipline = new Discipline(eventDto.getDiscipline(), groupService, disciplineService, resourceService, userService, eventService);
             }
             if (eventDto.getBlacklist() != null) {
                 blacklist = eventDto.getBlacklist().stream().map(it -> {

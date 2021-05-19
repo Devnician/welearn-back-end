@@ -5,6 +5,8 @@ import java.sql.Time;
 import java.util.Set;
 import java.util.stream.Collectors;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -33,6 +35,8 @@ public class ScheduleDto {
     @NotBlank(message = "Discipline is mandatory")
     private String disciplineId;
     private Set<String> resourceIds;
+    @NotNull(message = "Days is mandatory")
+    private String days;
 
     public ScheduleDto(Schedule schedule) {
         if (schedule != null) {

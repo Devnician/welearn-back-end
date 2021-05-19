@@ -1,16 +1,6 @@
 package uni.ruse.welearn.welearn.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -24,6 +14,17 @@ import uni.ruse.welearn.welearn.service.GroupService;
 import uni.ruse.welearn.welearn.service.ScheduleService;
 import uni.ruse.welearn.welearn.util.AuditedClass;
 import uni.ruse.welearn.welearn.util.WeLearnException;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 
 /**
  * @author Ivelin Dimitrov
@@ -43,14 +44,22 @@ public class Resource extends AuditedClass {
     )
     private String resourceId;
     @NotBlank(message = "Name is mandatory")
-    @Size(min = 2, max = 30, message = "Name may be between 2 and 30 symbols long")
-    @Pattern(regexp = "^[a-zA-Z0-9-_]*$", message = "File name my contain only letters, numbers, dash and underscores")
+    @Size(min = 2, max = 256, message = "Name may be between 2 and 256 symbols long")
+    @Pattern(regexp = "^[a-zA-Z0-9-_.\\s]*$", message = "File name my contain only letters, numbers, dash, underscore and dot")
     private String name;
     @NotBlank(message = "Type is mandatory")
-    @Pattern(regexp = "^(doc)|(docx)|(pdf)|(png)|(jpeg)|(jpg)|(xlsx)|(xls)|(csv)|(ods)|(txt)$", message = "Type is invalid")
+    @Pattern(regexp = "^(application/msword)|" +
+            "(application/vnd.openxmlformats-officedocument.wordprocessingml.document)|" +
+            "(application/pdf)|" +
+            "(image/png)|" +
+            "(image/jpeg)|" +
+            "(application/vnd.openxmlformats-officedocument.spreadsheetml.sheet)|" +
+            "(application/vnd.ms-excel)|" +
+            "(text/csv)|" +
+            "(application/vnd.oasis.opendocument.spreadsheet)|" +
+            "(text/plain)$", message = "Type is invalid")
     private String type;
     @NotBlank(message = "Dir path is mandatory")
-    @Size(max = 45, message = "Dir path may be up to 45 symbols long")
     @Column(unique = true)
     private String dirPath;
     @NotNull(message = "AccessibleAll is mandatory")

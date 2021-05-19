@@ -28,7 +28,7 @@ public class DisciplineService {
         return findOne(disciplineId);
     }
 
-    private Discipline findOne(String disciplineId) throws WeLearnException {
+    public Discipline findOne(String disciplineId) throws WeLearnException {
         Optional<Discipline> discipline = disciplineRepository.findById(disciplineId);
         if (discipline.isEmpty()) {
             throw new WeLearnException("Discipline with id " + disciplineId + " not found.");
