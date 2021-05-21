@@ -4,9 +4,11 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import java.sql.Time;
+import java.sql.Timestamp;
 import java.util.Set;
 import java.util.stream.Collectors;
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -52,15 +54,26 @@ public class Schedule extends AuditedClass {
             strategy = "uuid2"
     )
     private String id;
+
     @NotBlank(message = "Start time is mandatory")
     @JsonFormat(pattern = "HH:mm")
-    private Time startTime;
+    @Column(name="start_time")
+    private Time startHour;
     @NotBlank(message = "End time is mandatory")
     @JsonFormat(pattern = "HH:mm")
-    private Time endTime;
+    @Column(name="end_time")
+    private Time endHour;
+
+    @NotNull(message = "start date is mandatory")
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    private Timestamp startDate;
+    @NotNull(message = "start date is mandatory")
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    private Timestamp endDate;
 
     @NotNull(message = "Days is mandatory")
-    private String days;
+    @Column(name="days")
+    private String dayOfWeek;
 
     @ManyToOne
     @JoinColumn(name = "group_id")
