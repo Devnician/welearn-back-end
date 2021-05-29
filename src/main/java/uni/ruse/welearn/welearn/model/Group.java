@@ -174,15 +174,18 @@ public class Group extends AuditedClass {
             EventService eventService
     ) throws WeLearnException {
         User student = userService.findUserById(groupIdDto.getStudentId());
-        if (groupIdDto.isRemove()) {
-            student.setGroup(null);
-        } else {
-            Group group = groupService.findOne(groupIdDto.getGroupId());
-            student.setGroup(group);
-        }
-        userService.updateUser(student);
+        student.setPassword(null);
         Group group = groupService.findOne(groupIdDto.getGroupId());
         BeanUtils.copyProperties(group, this);
+        if (groupIdDto.isRemove()) {
+            student.setGroup(null);
+            users.remove(student);
+        } else {
+            student.setGroup(group);
+            users.add(student);
+        }
+        userService.updateUser(student);
+
 
 //        this.users.add(student);
     }
