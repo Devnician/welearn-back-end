@@ -26,4 +26,5 @@ import java.util.stream.Collectors;
 public class GroupIdDto {
     private String groupId;
     private String studentId;
+    private boolean remove;
 }

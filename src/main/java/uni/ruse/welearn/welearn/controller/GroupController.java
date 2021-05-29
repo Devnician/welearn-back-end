@@ -102,4 +102,14 @@ public class GroupController {
                         new Group(groupIdDto, scheduleService, disciplineService, groupService, resourceService, userService, eventService)
                 )), HttpStatus.OK);
     }
+
+    @PutMapping("/removestudent")
+    public ResponseEntity<GroupDto> removeStudent(
+            @RequestBody @Valid GroupIdDto groupIdDto
+    ) throws WeLearnException {
+        return new ResponseEntity<>(
+                new GroupDto(groupService.edit(
+                        new Group(groupIdDto, scheduleService, disciplineService, groupService, resourceService, userService, eventService)
+                )), HttpStatus.OK);
+    }
 }
