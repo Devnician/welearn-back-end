@@ -13,7 +13,7 @@ spring:
     driver-class-name: com.mysql.jdbc.Driver
   flyway:
     enabled: true
-    url: "jdbc:mysql://mariadb:3306/welearn?stringtype=unspecified"
+    url: "jdbc:mysql://mariadb:3306/welearn?stringtype=unspecified&useUnicode=true&characterEncoding=UTF-8"
     user: "welearn"
     password: "welearn"
   jpa:
