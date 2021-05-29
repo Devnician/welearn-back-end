@@ -1,6 +1,7 @@
 language: java
 
-if: type = pull_request OR branch = develop OR branch = main OR tag IS present
+#if: type = pull_request OR branch = develop OR branch = main OR tag IS present
+if: branch = develop OR branch = main OR tag IS present
 
 script: mvn package -DskipTests
 
