@@ -1,0 +1,32 @@
+server:
+  port: 8080
+
+spring:
+  servlet:
+    multipart:
+      max-file-size: "12MB"
+      max-request-size: "12MB"
+  datasource:
+    url: "jdbc:mysql://mariadb:3306/welearn?stringtype=unspecified&useUnicode=true&characterEncoding=UTF-8"
+    username: "welearn"
+    password: "welearn"
+    driver-class-name: com.mysql.jdbc.Driver
+  flyway:
+    enabled: true
+    url: "jdbc:mysql://mariadb:3306/welearn?stringtype=unspecified&useUnicode=true&characterEncoding=UTF-8"
+    user: "welearn"
+    password: "welearn"
+  jpa:
+    hibernate:
+      ddl-auto: none
+    show-sql: false
+    properties:
+      hibernate:
+        jdbc:
+          batch_size: "30"
+        order_inserts: "true"
+        order_updates: "true"
+        show_sql: false
+        temp:
+          use_jdbc_metadata_defaults: false
+        dialect: org.hibernate.dialect.MySQL5Dialect
