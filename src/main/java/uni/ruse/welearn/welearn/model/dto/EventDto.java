@@ -27,10 +27,10 @@ public class EventDto {
     @Size(min = 2, max = 30, message = "Name field may be between 2 and 30 symbols long")
     private String name;
     @NotNull(message = "Start date is mandatory")
-    @JsonFormat(pattern = "yyyy-MM-dd")
+
     private Timestamp startDate;
     @NotNull(message = "Start date is mandatory")
-    @JsonFormat(pattern = "yyyy-MM-dd")
+
     private Timestamp endDate;
     @NotNull(message = "Type is mandatory")
     private String type;
