@@ -84,11 +84,7 @@ public class Group extends AuditedClass {
     )
     private String groupId;
     @NotBlank(message = "Name is mandatory")
-    @Size(min = 2, max = 45, message = "Name may be between 2 and 45 symbols long")
-    @Pattern(regexp = "([а-яА-Я\\s]{2,})|([a-zA-Z\\s]{2,})", message = "Name is invalid, it may contain only letters")
     private String name;
-    @Size(min = 2, max = 45, message = "Description may be between 2 and 45 symbols long")
-    @Pattern(regexp = "([а-яА-Я\\s]{2,})|([a-zA-Z\\s]{2,})", message = "Description is invalid, it may contain only letters")
     private String description;
     @NotNull(message = "Max resources is mandatory")
     private Integer maxResourcesMb;
