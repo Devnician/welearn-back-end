@@ -51,7 +51,7 @@ public class Discipline extends AuditedClass {
     private String id;
 
     @NotBlank(message = "Name is mandatory")
-    @Pattern(regexp = "^[a-zA-Z0-9 ]*$", message = "Name may contain only letters and numbers")
+    @Pattern(regexp = "^[a-zA-Zа-яА-Я0-9 -]*$", message = "Name may contain only letters and numbers")
     private String name;
 
     @OneToMany(mappedBy = "discipline", fetch = FetchType.EAGER)
