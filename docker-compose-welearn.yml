@@ -26,9 +26,7 @@ services:
 
   welearn:
     container_name: welearn
-    build:
-      context: .
-      dockerfile: Dockerfile
+    image: test1996/welearn-backend
     networks:
       - "welearn_network"
     ports:

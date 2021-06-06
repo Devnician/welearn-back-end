@@ -22,7 +22,7 @@ import uni.ruse.welearn.welearn.model.Resource;
 public class DisciplineDto {
     private String id;
     @NotBlank(message = "Name is mandatory")
-    @Pattern(regexp = "^[a-zA-Z0-9 ]*$", message = "Name may contain only letters and numbers")
+    @Pattern(regexp = "^[a-zA-Zа-яА-Я0-9 -]*$", message = "Name may contain only letters and numbers")
     private String name;
     private Set<String> resourceIds;
     private UserDto teacher;

@@ -2,6 +2,7 @@ package uni.ruse.welearn.welearn.model.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import java.sql.Time;
+import java.sql.Timestamp;
 import java.util.Set;
 import java.util.stream.Collectors;
 import javax.validation.constraints.NotBlank;
@@ -26,17 +27,23 @@ public class ScheduleDto {
     private String id;
     @NotBlank(message = "Start time is mandatory")
     @JsonFormat(pattern = "HH:mm")
-    private Time startTime;
+    private Time startHour;
     @NotBlank(message = "End time is mandatory")
     @JsonFormat(pattern = "HH:mm")
-    private Time endTime;
+    private Time endHour;
     @NotBlank(message = "Group is mandatory")
     private String groupId;
     @NotBlank(message = "Discipline is mandatory")
     private String disciplineId;
     private Set<String> resourceIds;
     @NotNull(message = "Days is mandatory")
-    private String days;
+    private String dayOfWeek;
+    @NotNull(message = "start date is mandatory")
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    private Timestamp startDate;
+    @NotNull(message = "start date is mandatory")
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    private Timestamp endDate;
 
     public ScheduleDto(Schedule schedule) {
         if (schedule != null) {
