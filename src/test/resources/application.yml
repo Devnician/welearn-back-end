@@ -11,7 +11,7 @@ spring:
   main:
     allow-bean-definition-overriding: true
   profiles:
-    active: '@spring.profile@'
+    active: 'test'
   h2:
     console:
       enabled: true
