@@ -55,11 +55,11 @@ public class Event extends AuditedClass {
     @NotBlank
     @Size(min = 2, max = 30, message = "Name field may be between 2 and 30 symbols long")
     private String name;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
     @NotNull(message = "Start date is mandatory")
-
     private Timestamp startDate;
-    @NotNull(message = "Start date is mandatory")
-
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
+    @NotNull(message = "End date is mandatory")
     private Timestamp endDate;
     @NotNull(message = "Type is mandatory")
     private String type;

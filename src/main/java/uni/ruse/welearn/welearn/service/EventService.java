@@ -34,7 +34,7 @@ public class EventService {
 
 
     public Event save(Event event) throws WeLearnException {
-        if (event.getEventId().isBlank()) {
+        if (event.getEventId() == null) {
             return eventRepository.save(event);
         }
         checkOverlappingTimeRange(event);
