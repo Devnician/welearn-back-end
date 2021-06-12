@@ -1,13 +1,6 @@
 package uni.ruse.welearn.welearn.model.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import java.sql.Time;
-import java.sql.Timestamp;
-import java.util.Set;
-import java.util.stream.Collectors;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -18,6 +11,13 @@ import org.springframework.beans.BeanUtils;
 import uni.ruse.welearn.welearn.model.Resource;
 import uni.ruse.welearn.welearn.model.Schedule;
 import uni.ruse.welearn.welearn.util.TimeDeserializer;
+
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import java.sql.Time;
+import java.sql.Timestamp;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * @author ivelin.dimitrov
