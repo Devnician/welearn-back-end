@@ -42,6 +42,7 @@ public class GlobalExceptionController {
             });
             return new ResponseEntity<>(new ApiResponse<>(HttpStatus.BAD_REQUEST.value(), "Validation failed", errors), HttpStatus.BAD_REQUEST);
         } else {
+            exception.printStackTrace();
             return new ResponseEntity<>(new ApiResponse<>(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Internal server error", ""), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }

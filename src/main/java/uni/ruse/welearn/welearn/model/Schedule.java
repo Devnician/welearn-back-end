@@ -55,11 +55,9 @@ public class Schedule extends AuditedClass {
     )
     private String id;
 
-    @NotBlank(message = "Start time is mandatory")
     @JsonFormat(pattern = "HH:mm")
     @Column(name="start_time")
     private Time startHour;
-    @NotBlank(message = "End time is mandatory")
     @JsonFormat(pattern = "HH:mm")
     @Column(name="end_time")
     private Time endHour;

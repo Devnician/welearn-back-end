@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,6 +16,7 @@ import lombok.Setter;
 import org.springframework.beans.BeanUtils;
 import uni.ruse.welearn.welearn.model.Resource;
 import uni.ruse.welearn.welearn.model.Schedule;
+import uni.ruse.welearn.welearn.util.TimeDeserializer;
 
 /**
  * @author ivelin.dimitrov
@@ -25,10 +27,10 @@ import uni.ruse.welearn.welearn.model.Schedule;
 @AllArgsConstructor
 public class ScheduleDto {
     private String id;
-    @NotBlank(message = "Start time is mandatory")
+    @JsonDeserialize(using = TimeDeserializer.class)
     @JsonFormat(pattern = "HH:mm")
     private Time startHour;
-    @NotBlank(message = "End time is mandatory")
+    @JsonDeserialize(using = TimeDeserializer.class)
     @JsonFormat(pattern = "HH:mm")
     private Time endHour;
     @NotBlank(message = "Group is mandatory")
