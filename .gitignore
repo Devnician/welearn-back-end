@@ -38,4 +38,8 @@ build/
 ### VS Code ###
 .vscode/
 
+### resources from runtime ###
+data/*
+data/resources/*
+
 desktop.ini
