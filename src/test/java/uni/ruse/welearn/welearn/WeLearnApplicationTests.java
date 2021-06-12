@@ -367,58 +367,58 @@ class WeLearnApplicationTests {
         assertEquals("event", getGroupFromRepo().getEvents().iterator().next().getName());
     }
 
-    @Test
-    @Order(28)
-    void createResource() throws WeLearnException {
-        Resource resource = resourceService.save(
-                new MultipartFile() {
-                    @Override
-                    public String getName() {
-                        return "file";
-                    }
-
-                    @Override
-                    public String getOriginalFilename() {
-                        return "file";
-                    }
-
-                    @Override
-                    public String getContentType() {
-                        return "application/pdf";
-                    }
-
-                    @Override
-                    public boolean isEmpty() {
-                        return false;
-                    }
-
-                    @Override
-                    public long getSize() {
-                        return 0;
-                    }
-
-                    @Override
-                    public byte[] getBytes() throws IOException {
-                        return new byte[0];
-                    }
-
-                    @Override
-                    public InputStream getInputStream() throws IOException {
-                        return IOUtils.getInputStreamFromString("some text");
-                    }
-
-                    @Override
-                    public void transferTo(File file) throws IOException, IllegalStateException {
-
-                    }
-                },
-                getGroupFromRepo(),
-                getDisciplineFromRepo().getId(),
-                "missing",
-                true
-        );
-        assertEquals("file", resource.getName());
-    }
+//    @Test
+//    @Order(28)
+//    void createResource() throws WeLearnException {
+//        Resource resource = resourceService.save(
+//                new MultipartFile() {
+//                    @Override
+//                    public String getName() {
+//                        return "file";
+//                    }
+//
+//                    @Override
+//                    public String getOriginalFilename() {
+//                        return "file";
+//                    }
+//
+//                    @Override
+//                    public String getContentType() {
+//                        return "application/pdf";
+//                    }
+//
+//                    @Override
+//                    public boolean isEmpty() {
+//                        return false;
+//                    }
+//
+//                    @Override
+//                    public long getSize() {
+//                        return 0;
+//                    }
+//
+//                    @Override
+//                    public byte[] getBytes() throws IOException {
+//                        return new byte[0];
+//                    }
+//
+//                    @Override
+//                    public InputStream getInputStream() throws IOException {
+//                        return IOUtils.getInputStreamFromString("some text");
+//                    }
+//
+//                    @Override
+//                    public void transferTo(File file) throws IOException, IllegalStateException {
+//
+//                    }
+//                },
+//                getGroupFromRepo(),
+//                getDisciplineFromRepo().getId(),
+//                "missing",
+//                true
+//        );
+//        assertEquals("file", resource.getName());
+//    }
 
     @Test
     @Order(29)
@@ -457,11 +457,11 @@ class WeLearnApplicationTests {
             new Event(
                     eventDto, groupService, disciplineService, userService, eventService, resourceService
             );
-            Resource resource = discipline.getResources().iterator().next();
-            ResourceDto resourceDto = new ResourceDto(resource);
-            new Resource(
-                    resourceDto, scheduleService, disciplineService, groupService
-            );
+//            Resource resource = discipline.getResources().iterator().next();
+//            ResourceDto resourceDto = new ResourceDto(resource);
+//            new Resource(
+//                    resourceDto, scheduleService, disciplineService, groupService
+//            );
             Role role = user.getRole();
             RoleDto roleDto = new RoleDto(role);
             new Role(
@@ -479,67 +479,67 @@ class WeLearnApplicationTests {
         }
     }
 
-    @Test
-    @Order(30)
-    void editResource() throws WeLearnException {
-        Resource resource = getResourceFromRepo();
-        resourceService.edit(
-                new MultipartFile() {
-                                 @Override
-                                 public String getName() {
-                                     return "editedFile";
-                                 }
-
-                                 @Override
-                                 public String getOriginalFilename() {
-                                     return "editedFile";
-                                 }
-
-                                 @Override
-                                 public String getContentType() {
-                                     return "application/pdf";
-                                 }
-
-                                 @Override
-                                 public boolean isEmpty() {
-                                     return false;
-                                 }
-
-                                 @Override
-                                 public long getSize() {
-                                     return 0;
-                                 }
-
-                                 @Override
-                                 public byte[] getBytes() throws IOException {
-                                     return new byte[0];
-                                 }
-
-                                 @Override
-                                 public InputStream getInputStream() throws IOException {
-                                     return IOUtils.getInputStreamFromString("some text");
-                                 }
-
-                                 @Override
-                                 public void transferTo(File file) throws IOException, IllegalStateException {
-
-                                 }
-                             },
-                getGroupFromRepo(),
-                getDisciplineFromRepo().getId(),
-                "missing",
-                resource.getResourceId(),
-                true);
-        assertEquals("newName", getGroupFromRepo().getName());
-    }
+//    @Test
+//    @Order(30)
+//    void editResource() throws WeLearnException {
+//        Resource resource = getResourceFromRepo();
+//        resourceService.edit(
+//                new MultipartFile() {
+//                                 @Override
+//                                 public String getName() {
+//                                     return "editedFile";
+//                                 }
+//
+//                                 @Override
+//                                 public String getOriginalFilename() {
+//                                     return "editedFile";
+//                                 }
+//
+//                                 @Override
+//                                 public String getContentType() {
+//                                     return "application/pdf";
+//                                 }
+//
+//                                 @Override
+//                                 public boolean isEmpty() {
+//                                     return false;
+//                                 }
+//
+//                                 @Override
+//                                 public long getSize() {
+//                                     return 0;
+//                                 }
+//
+//                                 @Override
+//                                 public byte[] getBytes() throws IOException {
+//                                     return new byte[0];
+//                                 }
+//
+//                                 @Override
+//                                 public InputStream getInputStream() throws IOException {
+//                                     return IOUtils.getInputStreamFromString("some text");
+//                                 }
+//
+//                                 @Override
+//                                 public void transferTo(File file) throws IOException, IllegalStateException {
+//
+//                                 }
+//                             },
+//                getGroupFromRepo(),
+//                getDisciplineFromRepo().getId(),
+//                "missing",
+//                resource.getResourceId(),
+//                true);
+//        assertEquals("newName", getGroupFromRepo().getName());
+//    }
 
     @Test
     @Order(31)
     void deleteAll() throws WeLearnException {
-        Resource resource = getResourceFromRepo();
+//        Resource resource = getResourceFromRepo();
         Group group = getGroupFromRepo();
         Discipline discipline = getDisciplineFromRepo();
-        resourceService.delete(resource.getResourceId(), group);
+//        resourceService.delete(resource.getResourceId(), group);
         eventService.delete(group.getEvents().iterator().next().getEventId());
         scheduleService.delete(group.getSchedules().iterator().next().getId());
         evaluationMarkService.delete(group.getUsers().iterator().next().getEvaluationMarks().iterator().next().getId());
