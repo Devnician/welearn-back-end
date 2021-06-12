@@ -12,6 +12,7 @@ class WeLearnApplicationTests {
 
 	@Test
 	void contextLoads() {
+
 	}
 
 }
