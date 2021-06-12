@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import uni.ruse.welearn.welearn.model.Group;
 import uni.ruse.welearn.welearn.model.dto.GroupDto;
+import uni.ruse.welearn.welearn.model.dto.GroupIdDto;
 import uni.ruse.welearn.welearn.service.DisciplineService;
 import uni.ruse.welearn.welearn.service.EventService;
 import uni.ruse.welearn.welearn.service.GroupService;
@@ -90,5 +91,25 @@ public class GroupController {
         groupService.delete(id);
         return new ResponseEntity<>(
                 true, HttpStatus.OK);
+    }
+
+    @PutMapping("/addstudent")
+    public ResponseEntity<GroupDto> addStudent(
+            @RequestBody @Valid GroupIdDto groupIdDto
+    ) throws WeLearnException {
+        return new ResponseEntity<>(
+                new GroupDto(groupService.edit(
+                        new Group(groupIdDto, scheduleService, disciplineService, groupService, resourceService, userService, eventService)
+                )), HttpStatus.OK);
+    }
+
+    @PutMapping("/removestudent")
+    public ResponseEntity<GroupDto> removeStudent(
+            @RequestBody @Valid GroupIdDto groupIdDto
+    ) throws WeLearnException {
+        return new ResponseEntity<>(
+                new GroupDto(groupService.edit(
+                        new Group(groupIdDto, scheduleService, disciplineService, groupService, resourceService, userService, eventService)
+                )), HttpStatus.OK);
     }
 }

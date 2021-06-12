@@ -71,7 +71,7 @@ public class User extends AuditedClass {
     @Pattern(regexp = "^[a-zA-Z0-9]*$", message = "Username field accepts only letters and numbers.")
     @Column(unique = true)
     private String username;
-    @NotBlank(message = "Password is mandatory")
+//    @NotBlank(message = "Password is mandatory")
     private String password;
     @Size(min = 2, max = 45, message = "Address length must be between 2 and 45 symbols")
     private String address;

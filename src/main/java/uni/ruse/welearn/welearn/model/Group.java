@@ -12,6 +12,7 @@ import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 import org.springframework.beans.BeanUtils;
 import uni.ruse.welearn.welearn.model.dto.GroupDto;
+import uni.ruse.welearn.welearn.model.dto.GroupIdDto;
 import uni.ruse.welearn.welearn.service.DisciplineService;
 import uni.ruse.welearn.welearn.service.EventService;
 import uni.ruse.welearn.welearn.service.GroupService;
@@ -157,5 +158,31 @@ public class Group extends AuditedClass {
                 }).collect(Collectors.toSet());
             }
         }
+    }
+
+    public Group(
+            GroupIdDto groupIdDto,
+            ScheduleService scheduleService,
+            DisciplineService disciplineService,
+            GroupService groupService,
+            ResourceService resourceService,
+            UserService userService,
+            EventService eventService
+    ) throws WeLearnException {
+        User student = userService.findUserById(groupIdDto.getStudentId());
+        student.setPassword(null);
+        Group group = groupService.findOne(groupIdDto.getGroupId());
+        BeanUtils.copyProperties(group, this);
+        if (groupIdDto.isRemove()) {
+            student.setGroup(null);
+            users.remove(student);
+        } else {
+            student.setGroup(group);
+            users.add(student);
+        }
+        userService.updateUser(student);
+
+
+//        this.users.add(student);
     }
 }
