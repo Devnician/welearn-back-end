@@ -38,7 +38,7 @@ public class GroupService {
     }
 
     public Group save(Group group) throws WeLearnException {
-        if (group.getGroupId().isBlank() || group.getGroupId().isEmpty() || group.getGroupId() == null) {
+        if (group.getGroupId() == null || group.getGroupId().isBlank() || group.getGroupId().isEmpty()) {
             return groupRepository.save(group);
         }
         throw new WeLearnException("New Group object cannot have an id");

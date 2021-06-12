@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import java.sql.Timestamp;
 import java.util.Set;
 import java.util.stream.Collectors;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -44,8 +45,6 @@ import uni.ruse.welearn.welearn.util.WeLearnException;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
-@Builder
 public class User extends AuditedClass {
     @Id
     @GeneratedValue(generator = "uuid")
@@ -87,7 +86,7 @@ public class User extends AuditedClass {
     private int loggedIn;
     private int deleted;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.DETACH)
     @JoinColumn(name = "group_id")
     @JsonBackReference
     private Group group;
@@ -97,7 +96,7 @@ public class User extends AuditedClass {
     @JsonManagedReference
     private Set<EvaluationMark> evaluationMarks;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "role_id")
     @JsonBackReference
     @NotNull(message = "Role is mandatory")

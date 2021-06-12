@@ -132,7 +132,7 @@ public class UserService implements UserDetailsService {
             if (user.getPassword() == null) {
                 log.info("Password is not changed for " + user.getUserId());
             } else {
-                log.info("Changed pass " + user.getPassword());
+                log.info("Changed password " + user.getPassword());
                 existingUser.setPassword(bcryptEncoder.encode(user.getPassword()));
             }
             if (!user.getEmail().isBlank()) {

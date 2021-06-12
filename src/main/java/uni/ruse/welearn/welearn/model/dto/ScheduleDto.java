@@ -10,6 +10,7 @@ import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -25,6 +26,7 @@ import uni.ruse.welearn.welearn.util.TimeDeserializer;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class ScheduleDto {
     private String id;
     @JsonDeserialize(using = TimeDeserializer.class)

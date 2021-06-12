@@ -79,9 +79,8 @@ public class ResourceService {
         return resourceRepository.findAll();
     }
 
-    public Resource save(MultipartFile file, HttpServletRequest req, String disciplineId, String scheduleId, Boolean accessibleAll) throws WeLearnException {
+    public Resource save(MultipartFile file, Group group, String disciplineId, String scheduleId, Boolean accessibleAll) throws WeLearnException {
         String fileName = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
-        Group group = userService.findOne(jwtTokenUtil.getUsernameFromToken(jwtTokenUtil.getToken(req))).getGroup();
         Discipline discipline = !disciplineId.equals(MISSING) ? disciplineService.getDisciplineById(disciplineId) : null;
         Schedule schedule = !scheduleId.equals(MISSING) ? scheduleService.findById(scheduleId) : null;
         Path path = Paths.get("/data/resources/");
@@ -132,11 +131,11 @@ public class ResourceService {
         return newPath;
     }
 
-    public Resource edit(MultipartFile file, HttpServletRequest req, String disciplineId, String scheduleId, String resourceId, Boolean accessibleAll) throws WeLearnException {
+    public Resource edit(MultipartFile file, Group group, String disciplineId, String scheduleId, String resourceId, Boolean accessibleAll) throws WeLearnException {
         Discipline discipline = !disciplineId.equals(MISSING) ? disciplineService.getDisciplineById(disciplineId) : null;
         Schedule schedule = !scheduleId.equals(MISSING) ? scheduleService.findById(scheduleId) : null;
         Resource existingResource = findById(resourceId);
-        validateGroup(req, existingResource);
+        validateGroup(group, existingResource);
         existingResource.setDiscipline(discipline);
         existingResource.setSchedule(schedule);
         existingResource.setName(StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename())));
@@ -159,8 +158,7 @@ public class ResourceService {
         }
     }
 
-    private void validateGroup(HttpServletRequest req, Resource existingResource) throws WeLearnException {
-        Group group = userService.findOne(jwtTokenUtil.getUsernameFromToken(jwtTokenUtil.getToken(req))).getGroup();
+    private void validateGroup(Group group, Resource existingResource) throws WeLearnException {
         if(existingResource.getGroup() != null) {
             if (!existingResource.getGroup().getGroupId().equals(group.getGroupId())) {
                 throw new WeLearnException("Group of sending user and resource must be matching");
@@ -168,9 +166,9 @@ public class ResourceService {
         }
     }
 
-    public void delete(String id, HttpServletRequest req) throws WeLearnException {
+    public void delete(String id, Group group) throws WeLearnException {
         Resource existingResource = findById(id);
-        validateGroup(req, existingResource);
+        validateGroup(group, existingResource);
         deleteFileFromStorage(existingResource);
         resourceRepository.delete(existingResource);
     }

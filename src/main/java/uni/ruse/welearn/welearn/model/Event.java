@@ -43,7 +43,6 @@ import uni.ruse.welearn.welearn.util.WeLearnException;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 public class Event extends AuditedClass {
     @Id
     @GeneratedValue(generator = "uuid")

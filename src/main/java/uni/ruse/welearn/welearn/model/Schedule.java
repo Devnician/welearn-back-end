@@ -44,8 +44,6 @@ import uni.ruse.welearn.welearn.util.WeLearnException;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
-@Builder
 public class Schedule extends AuditedClass {
     @Id
     @GeneratedValue(generator = "uuid")

@@ -39,8 +39,6 @@ import uni.ruse.welearn.welearn.util.WeLearnException;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
-@Builder
 public class Discipline extends AuditedClass {
     @Id
     @GeneratedValue(generator = "uuid")

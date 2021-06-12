@@ -16,12 +16,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+import uni.ruse.welearn.welearn.model.Group;
 import uni.ruse.welearn.welearn.model.Resource;
 import uni.ruse.welearn.welearn.model.dto.ResourceDto;
 import uni.ruse.welearn.welearn.service.DisciplineService;
 import uni.ruse.welearn.welearn.service.GroupService;
 import uni.ruse.welearn.welearn.service.ResourceService;
 import uni.ruse.welearn.welearn.service.ScheduleService;
+import uni.ruse.welearn.welearn.service.UserService;
+import uni.ruse.welearn.welearn.util.JwtTokenUtil;
 import uni.ruse.welearn.welearn.util.WeLearnException;
 
 import javax.servlet.http.HttpServletRequest;
@@ -46,6 +49,10 @@ public class ResourceController {
     private GroupService groupService;
     @Autowired
     private ResourceService resourceService;
+    @Autowired
+    private UserService userService;
+    @Autowired
+    private JwtTokenUtil jwtTokenUtil;
 
     @GetMapping("/{id}")
     public ResponseEntity<ResourceDto> getById(
@@ -82,7 +89,7 @@ public class ResourceController {
             HttpServletRequest req
     ) throws WeLearnException {
         checkOnlyOneOptionalParam(disciplineId, scheduleId);
-        return new ResponseEntity<>(new ResourceDto(resourceService.save(file, req, disciplineId, scheduleId, accessibleAll)
+        return new ResponseEntity<>(new ResourceDto(resourceService.save(file, getGroupFromRequest(req), disciplineId, scheduleId, accessibleAll)
         ), HttpStatus.OK);
     }
 
@@ -107,7 +114,7 @@ public class ResourceController {
             HttpServletRequest req
     ) throws WeLearnException {
         checkOnlyOneOptionalParam(disciplineId, scheduleId);
-        return new ResponseEntity<>(new ResourceDto(resourceService.edit(file, req, disciplineId, scheduleId, resourceId, accessibleAll)
+        return new ResponseEntity<>(new ResourceDto(resourceService.edit(file, getGroupFromRequest(req), disciplineId, scheduleId, resourceId, accessibleAll)
         ), HttpStatus.OK);
     }
 
@@ -116,7 +123,11 @@ public class ResourceController {
             @PathVariable String id,
             HttpServletRequest req
     ) throws WeLearnException {
-        resourceService.delete(id, req);
+        resourceService.delete(id, getGroupFromRequest(req));
         return new ResponseEntity<>(true, HttpStatus.OK);
+    }
+
+    private Group getGroupFromRequest(HttpServletRequest req) {
+        return userService.findOne(jwtTokenUtil.getUsernameFromToken(jwtTokenUtil.getToken(req))).getGroup();
     }
 }

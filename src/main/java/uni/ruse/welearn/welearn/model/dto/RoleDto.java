@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -19,6 +20,7 @@ import uni.ruse.welearn.welearn.model.User;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class RoleDto {
     private long id;
     @NotBlank(message = "Role is mandatory")
