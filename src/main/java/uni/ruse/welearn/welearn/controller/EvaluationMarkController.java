@@ -54,14 +54,34 @@ public class EvaluationMarkController {
         return new ResponseEntity<>(evaluationMarkService.findAll().stream().map(EvaluationMarkDto::new).collect(Collectors.toList()), HttpStatus.OK);
     }
 
+//    @PostMapping
+//    public ResponseEntity<EvaluationMarkDto> createMark(
+//            @RequestBody @Valid EvaluationMarkDto evaluationMarkDto
+//    ) throws WeLearnException {
+//        return new ResponseEntity<>(
+//                new EvaluationMarkDto(evaluationMarkService.save(
+//                        new EvaluationMark(evaluationMarkDto, groupService, disciplineService, userService)
+//                )), HttpStatus.OK);
+//    }
+
     @PostMapping
     public ResponseEntity<EvaluationMarkDto> createMark(
-            @RequestBody @Valid EvaluationMarkDto evaluationMarkDto
+            @RequestBody @Valid EvaluationMarkDto[] evaluationMarkDtos
     ) throws WeLearnException {
-        return new ResponseEntity<>(
-                new EvaluationMarkDto(evaluationMarkService.save(
-                        new EvaluationMark(evaluationMarkDto, groupService, disciplineService, userService)
-                )), HttpStatus.OK);
+        for (EvaluationMarkDto mark : evaluationMarkDtos) {
+            if (mark.getId() == null && mark.getMarkValue() != null) {
+                evaluationMarkService.save(new EvaluationMark(mark, groupService, disciplineService, userService));
+            } else if (mark.getId() != null && mark.getMarkValue() == null) {
+                evaluationMarkService.delete(mark.getId());
+            } else if (mark.getId() != null) {
+                evaluationMarkService.edit(new EvaluationMark(mark, groupService, disciplineService, userService));
+            }
+        }
+        return new ResponseEntity<>(HttpStatus.OK);
+//        return new ResponseEntity<>(
+//                new EvaluationMarkDto(evaluationMarkService.save(
+//                        new EvaluationMark(evaluationMarkDto, groupService, disciplineService, userService)
+//                )), HttpStatus.OK);
     }
 
     @PutMapping
