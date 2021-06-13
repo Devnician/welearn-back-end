@@ -18,13 +18,13 @@ spring:
       max-file-size: "12MB"
       max-request-size: "12MB"
   datasource:
-    url: "jdbc:mysql://mariadb:3306/welearn?stringtype=unspecified&useUnicode=true&characterEncoding=UTF-8"
+    url: "jdbc:mysql://mariadb-ci:3306/welearn?stringtype=unspecified&useUnicode=true&characterEncoding=UTF-8"
     username: "welearn"
     password: "welearn"
     driver-class-name: com.mysql.jdbc.Driver
   flyway:
     enabled: true
-    url: "jdbc:mysql://mariadb:3306/welearn?stringtype=unspecified&useUnicode=true&characterEncoding=UTF-8"
+    url: "jdbc:mysql://mariadb-ci:3306/welearn?stringtype=unspecified&useUnicode=true&characterEncoding=UTF-8"
     user: "welearn"
     password: "welearn"
   jpa:
