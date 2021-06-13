@@ -1,16 +1,18 @@
 package uni.ruse.welearn.welearn.model.dto;
 
-import java.util.Set;
-import java.util.stream.Collectors;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.beans.BeanUtils;
 import uni.ruse.welearn.welearn.model.Role;
 import uni.ruse.welearn.welearn.model.User;
+
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * @author ivelin.dimitrov
@@ -19,6 +21,7 @@ import uni.ruse.welearn.welearn.model.User;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class RoleDto {
     private long id;
     @NotBlank(message = "Role is mandatory")

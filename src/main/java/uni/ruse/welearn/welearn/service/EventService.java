@@ -34,16 +34,16 @@ public class EventService {
 
 
     public Event save(Event event) throws WeLearnException {
-        if (event.getEventId().isBlank()) {
+        if (event.getEventId() == null || event.getEventId().isEmpty()) {
             return eventRepository.save(event);
         }
-        checkOverlappingTimeRange(event);
+//        checkOverlappingTimeRange(event);
         throw new WeLearnException("New Event object cannot have an id");
     }
 
     public Event edit(Event event) throws WeLearnException {
         Event existingEvent = findById(event.getEventId());
-        checkOverlappingTimeRange(event);
+//        checkOverlappingTimeRange(event);
         existingEvent.setDescription(event.getDescription());
         existingEvent.setDiscipline(event.getDiscipline());
         existingEvent.setGroup(event.getGroup());

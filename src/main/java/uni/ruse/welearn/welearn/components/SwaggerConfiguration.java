@@ -1,10 +1,5 @@
 package uni.ruse.welearn.welearn.components;
 
-import java.security.Timestamp;
-import java.sql.Time;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -19,6 +14,12 @@ import springfox.documentation.service.SecurityReference;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spi.service.contexts.SecurityContext;
 import springfox.documentation.spring.web.plugins.Docket;
+
+import java.security.Timestamp;
+import java.sql.Time;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
 
 /**
  * @author Ivelin Dimitrov

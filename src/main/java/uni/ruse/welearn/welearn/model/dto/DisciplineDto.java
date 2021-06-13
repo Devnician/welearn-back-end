@@ -1,16 +1,18 @@
 package uni.ruse.welearn.welearn.model.dto;
 
-import java.util.Set;
-import java.util.stream.Collectors;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.beans.BeanUtils;
 import uni.ruse.welearn.welearn.model.Discipline;
 import uni.ruse.welearn.welearn.model.Resource;
+
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * @author ivelin.dimitrov
@@ -19,6 +21,7 @@ import uni.ruse.welearn.welearn.model.Resource;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class DisciplineDto {
     private String id;
     @NotBlank(message = "Name is mandatory")

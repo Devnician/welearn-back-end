@@ -61,7 +61,7 @@
             <appender-ref ref="ELASTIC" />
         </root>
     </springProfile>
-        <springProfile name="local,docker">
+        <springProfile name="local,docker,test">
             <include resource="org/springframework/boot/logging/logback/base.xml"/>
             <logger name="guru.springframework.controllers" level="WARN" additivity="false">
                 <appender-ref ref="CONSOLE"/>

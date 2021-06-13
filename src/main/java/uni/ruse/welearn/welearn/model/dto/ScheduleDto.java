@@ -1,20 +1,23 @@
 package uni.ruse.welearn.welearn.model.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import java.sql.Time;
-import java.sql.Timestamp;
-import java.util.Set;
-import java.util.stream.Collectors;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.beans.BeanUtils;
 import uni.ruse.welearn.welearn.model.Resource;
 import uni.ruse.welearn.welearn.model.Schedule;
+import uni.ruse.welearn.welearn.util.TimeDeserializer;
+
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import java.sql.Time;
+import java.sql.Timestamp;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * @author ivelin.dimitrov
@@ -23,12 +26,13 @@ import uni.ruse.welearn.welearn.model.Schedule;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class ScheduleDto {
     private String id;
-    @NotBlank(message = "Start time is mandatory")
+    @JsonDeserialize(using = TimeDeserializer.class)
     @JsonFormat(pattern = "HH:mm")
     private Time startHour;
-    @NotBlank(message = "End time is mandatory")
+    @JsonDeserialize(using = TimeDeserializer.class)
     @JsonFormat(pattern = "HH:mm")
     private Time endHour;
     @NotBlank(message = "Group is mandatory")

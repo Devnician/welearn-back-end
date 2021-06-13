@@ -1,6 +1,5 @@
 package uni.ruse.welearn.welearn.config;
 
-import javax.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -16,6 +15,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import uni.ruse.welearn.welearn.components.JwtAuthenticationEntryPoint;
+
+import javax.annotation.Resource;
 
 /**
  * The security configuration class

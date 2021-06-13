@@ -1,15 +1,14 @@
 package uni.ruse.welearn.welearn.service;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import uni.ruse.welearn.welearn.model.Discipline;
 import uni.ruse.welearn.welearn.model.Group;
 import uni.ruse.welearn.welearn.repository.GroupRepository;
 import uni.ruse.welearn.welearn.util.WeLearnException;
+
+import java.util.List;
+import java.util.Optional;
 
 /**
  * @author ivelin.dimitrov
@@ -38,7 +37,7 @@ public class GroupService {
     }
 
     public Group save(Group group) throws WeLearnException {
-        if (group.getGroupId().isBlank() || group.getGroupId().isEmpty() || group.getGroupId() == null) {
+        if (group.getGroupId() == null || group.getGroupId().isBlank() || group.getGroupId().isEmpty()) {
             return groupRepository.save(group);
         }
         throw new WeLearnException("New Group object cannot have an id");

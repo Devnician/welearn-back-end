@@ -1,8 +1,5 @@
 package uni.ruse.welearn.welearn.service;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +15,10 @@ import uni.ruse.welearn.welearn.model.auth.ApiResponse;
 import uni.ruse.welearn.welearn.repository.RoleRepository;
 import uni.ruse.welearn.welearn.repository.UserRepository;
 import uni.ruse.welearn.welearn.util.WeLearnException;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 
 /**
  * Service that wires all related repositories and methods for processing and
@@ -132,7 +133,7 @@ public class UserService implements UserDetailsService {
             if (user.getPassword() == null) {
                 log.info("Password is not changed for " + user.getUserId());
             } else {
-                log.info("Changed pass " + user.getPassword());
+                log.info("Changed password " + user.getPassword());
                 existingUser.setPassword(bcryptEncoder.encode(user.getPassword()));
             }
             if (!user.getEmail().isBlank()) {

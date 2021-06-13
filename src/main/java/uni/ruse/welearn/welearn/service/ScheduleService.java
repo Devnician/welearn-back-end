@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import uni.ruse.welearn.welearn.model.Event;
 import uni.ruse.welearn.welearn.model.Group;
 import uni.ruse.welearn.welearn.model.Schedule;
+import uni.ruse.welearn.welearn.repository.EventRepository;
 import uni.ruse.welearn.welearn.repository.ScheduleRepository;
 import uni.ruse.welearn.welearn.util.WeLearnException;
 
@@ -30,6 +31,8 @@ public class ScheduleService {
     GroupService groupService;
     @Autowired
     EventService eventService;
+    @Autowired
+    EventRepository eventRepository;
 
     public Schedule findById(String id) throws WeLearnException {
         Optional<Schedule> optionalSchedule = scheduleRepository.findById(id);
@@ -68,6 +71,13 @@ public class ScheduleService {
     public void generateEvents(String id) throws WeLearnException {
         Schedule foundSchedule = findById(id);
         Group foundGroup = groupService.findOne(foundSchedule.getGroup().getGroupId());
+        for (Event events : foundGroup.getEvents()){
+            try {
+                eventRepository.delete(events);
+            } catch (Exception ignored){
+                ignored.printStackTrace();
+            }
+        }
         for (
                 LocalDate date = foundSchedule.getStartDate().toLocalDateTime().toLocalDate();
                 date.isBefore(foundSchedule.getEndDate().toLocalDateTime().toLocalDate());
