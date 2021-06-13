@@ -3,7 +3,7 @@ server:
 
 spring:
   mail:
-    host: http://172.16.250.30/
+    host: http://172.16.250.30
     port: 1025
     username: admin@welearn.bg
     password: admin
