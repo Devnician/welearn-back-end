@@ -3,7 +3,7 @@ server:
 
 spring:
   mail:
-    host: 172.16.250.30
+    host: mailhog
     port: 1025
     username: admin@welearn.bg
     password: admin
