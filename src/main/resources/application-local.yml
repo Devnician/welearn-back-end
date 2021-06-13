@@ -2,6 +2,17 @@ server:
   port: 8080
 
 spring:
+  mail:
+    host: localhost
+    port: 1025
+    username: admin@welearn.bg
+    password: admin
+    protocol: smtp
+    properties:
+      "mail.transport.protocol": smtp
+      "mail.smtp.auth": true
+      "mail.smtp.starttls.enable": true
+
   servlet:
     multipart:
       max-file-size: "12MB"

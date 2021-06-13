@@ -2,18 +2,29 @@ server:
   port: 8080
 
 spring:
+  mail:
+    host: localhost
+    port: 1025
+    username: admin@welearn.bg
+    password: admin
+    protocol: smtp
+    properties:
+      "mail.transport.protocol": smtp
+      "mail.smtp.auth": true
+      "mail.smtp.starttls.enable": true
+
   servlet:
     multipart:
       max-file-size: "12MB"
       max-request-size: "12MB"
   datasource:
-    url: "jdbc:mysql://mariadb-ci:3306/welearn?stringtype=unspecified&useUnicode=true&characterEncoding=UTF-8"
+    url: "jdbc:mysql://mariadb:3306/welearn?stringtype=unspecified&useUnicode=true&characterEncoding=UTF-8"
     username: "welearn"
     password: "welearn"
     driver-class-name: com.mysql.jdbc.Driver
   flyway:
     enabled: true
-    url: "jdbc:mysql://mariadb-ci:3306/welearn?stringtype=unspecified&useUnicode=true&characterEncoding=UTF-8"
+    url: "jdbc:mysql://mariadb:3306/welearn?stringtype=unspecified&useUnicode=true&characterEncoding=UTF-8"
     user: "welearn"
     password: "welearn"
   jpa:

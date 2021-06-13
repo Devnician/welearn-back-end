@@ -336,7 +336,7 @@ class WeLearnApplicationTests {
     void createEvent() throws WeLearnException {
         eventService.findAll().forEach(it -> {
             try {
-                eventService.delete(it.getEventId());
+                eventService.deleteWithoutEmail(it.getEventId());
             } catch (WeLearnException e) {
                 e.printStackTrace();
             }
@@ -352,7 +352,7 @@ class WeLearnApplicationTests {
                 .groupId(getGroupFromRepo().getGroupId())
                 .discipline(new DisciplineDto(discipline))
                 .build();
-        Event event = eventService.save(new Event(
+        Event event = eventService.saveWithoutEmail(new Event(
                 eventDto, groupService, disciplineService, userService, eventService, resourceService
         ));
         assertEquals("test", event.getName());
@@ -363,7 +363,7 @@ class WeLearnApplicationTests {
     void editEvent() throws WeLearnException {
         Event event = getGroupFromRepo().getEvents().iterator().next();
         event.setName("event");
-        eventService.edit(event);
+        eventService.editWithoutEmail(event);
         assertEquals("event", getGroupFromRepo().getEvents().iterator().next().getName());
     }
 
@@ -540,7 +540,7 @@ class WeLearnApplicationTests {
         Group group = getGroupFromRepo();
         Discipline discipline = getDisciplineFromRepo();
 //        resourceService.delete(resource.getResourceId(), group);
-        eventService.delete(group.getEvents().iterator().next().getEventId());
+        eventService.deleteWithoutEmail(group.getEvents().iterator().next().getEventId());
         scheduleService.delete(group.getSchedules().iterator().next().getId());
         evaluationMarkService.delete(group.getUsers().iterator().next().getEvaluationMarks().iterator().next().getId());
         Discipline halvedDiscipline = getDisciplineFromRepo();
@@ -560,7 +560,7 @@ class WeLearnApplicationTests {
             }
         });
         roleService.deleteRoleById(group.getUsers().iterator().next().getRole().getId());
-        groupService.delete(halvedGroup.getGroupId());
+//        groupService.delete(halvedGroup.getGroupId());
         assertThrows(WeLearnException.class, () -> {
             userService.findUserById("username123");
         });

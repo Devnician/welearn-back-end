@@ -110,4 +110,18 @@ public class Schedule extends AuditedClass {
             }
         }
     }
+
+    @Override
+    public String toString() {
+        return "Schedule{" +
+                "id='" + id + '\'' + "\n" +
+                ", startHour=" + startHour + "\n" +
+                ", endHour=" + endHour + "\n" +
+                ", startDate=" + startDate + "\n" +
+                ", endDate=" + endDate + "\n" +
+                ", dayOfWeek='" + dayOfWeek + '\'' + "\n" +
+                ", group=" + group.getName() + "\n" +
+                ", discipline=" + discipline.getName() + "\n" +
+                '}';
+    }
 }

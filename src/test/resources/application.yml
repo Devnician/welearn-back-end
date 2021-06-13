@@ -8,6 +8,16 @@ management:
         include: "*"
 
 spring:
+  mail:
+    host: localhost
+    port: 1025
+    username: admin@welearn.bg
+    password: admin
+    protocol: smtp
+    properties:
+      "mail.transport.protocol": smtp
+      "mail.smtp.auth": true
+      "mail.smtp.starttls.enable": true
   main:
     allow-bean-definition-overriding: true
   profiles:

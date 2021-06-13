@@ -112,4 +112,18 @@ public class Event extends AuditedClass {
             }
         }
     }
+
+    @Override
+    public String toString() {
+        return "Event{" +
+                "eventId='" + eventId + '\'' + "\n" +
+                ", name='" + name + '\'' + "\n" +
+                ", startDate=" + startDate + "\n" +
+                ", endDate=" + endDate + "\n" +
+                ", type='" + type + '\'' + "\n" +
+                ", description='" + description + '\'' + "\n" +
+                ", group=" + group.getName() + "\n" +
+                ", discipline=" + discipline.getName() + "\n" +
+                '}';
+    }
 }

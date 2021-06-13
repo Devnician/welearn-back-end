@@ -3,6 +3,7 @@ package uni.ruse.welearn.welearn.service;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import uni.ruse.welearn.welearn.components.EmailService;
 import uni.ruse.welearn.welearn.model.Event;
 import uni.ruse.welearn.welearn.model.Group;
 import uni.ruse.welearn.welearn.model.Schedule;
@@ -17,6 +18,7 @@ import java.time.format.TextStyle;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * @author ivelin.dimitrov
@@ -33,6 +35,8 @@ public class ScheduleService {
     EventService eventService;
     @Autowired
     EventRepository eventRepository;
+    @Autowired
+    EmailService emailService;
 
     public Schedule findById(String id) throws WeLearnException {
         Optional<Schedule> optionalSchedule = scheduleRepository.findById(id);
@@ -73,9 +77,9 @@ public class ScheduleService {
         Group foundGroup = groupService.findOne(foundSchedule.getGroup().getGroupId());
         for (Event events : foundGroup.getEvents()){
             try {
-                eventRepository.delete(events);
-            } catch (Exception ignored){
-                ignored.printStackTrace();
+                eventService.deleteWithoutEmail(events.getEventId());
+            } catch (Exception exception){
+                exception.printStackTrace();
             }
         }
         for (
@@ -96,10 +100,17 @@ public class ScheduleService {
                             schedule.getDiscipline(),
                             null
                     );
-                    eventService.save(newEvent);
+                    eventService.saveWithoutEmail(newEvent);
                 }
             }
         }
+        AtomicReference<String> emailText = new AtomicReference<>("");
+        foundGroup.getSchedules().forEach(it -> emailText.set(emailText + "\n" + it.toString()));
+        foundGroup.getUsers().forEach(it -> emailService.sendSimpleMessage(
+                it.getEmail(),
+                "A set of events has been generated - Welearn",
+                emailText.get()
+        ));
     }
 
     public static String getDayStringNew(LocalDate date, Locale locale) {

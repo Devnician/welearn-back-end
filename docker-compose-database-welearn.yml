@@ -5,6 +5,13 @@ networks:
     driver: "bridge"
 
 services:
+  mailserver:
+    container_name: mailhog
+    image: mailhog/mailhog
+    ports:
+      - 1025:1025
+      - 8025:8025
+
   mariadb:
     container_name: mariadb
     image: mariadb:10.4

@@ -43,7 +43,7 @@ import java.util.stream.Collectors;
 @Setter
 @NoArgsConstructor
 public class Group extends AuditedClass {
-    @OneToMany(mappedBy = "group", fetch = FetchType.EAGER, cascade = CascadeType.DETACH, orphanRemoval = true)
+    @OneToMany(mappedBy = "group", fetch = FetchType.EAGER)
     @LazyCollection(LazyCollectionOption.FALSE)
     @JsonManagedReference
     private Set<User> users;
