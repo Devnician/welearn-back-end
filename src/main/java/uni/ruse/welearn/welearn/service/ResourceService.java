@@ -234,6 +234,12 @@ public class ResourceService {
                 }
             }
         }
+
+        // Students will see only accessible events and respectively - files
+        if(resource.getEvent()!=null && ((resource.getAccessibleAll() || user.getRole().getRole().equals("teacher") )) ){
+            ref.foundResource = getUrlResource(resource);
+        }
+
         if (ref.foundResource != null) {
             return getUrlResource(resource);
         }
