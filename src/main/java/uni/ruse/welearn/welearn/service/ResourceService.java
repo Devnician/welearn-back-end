@@ -6,9 +6,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import uni.ruse.welearn.welearn.model.Discipline;
+import uni.ruse.welearn.welearn.model.Event;
 import uni.ruse.welearn.welearn.model.Group;
 import uni.ruse.welearn.welearn.model.Resource;
-import uni.ruse.welearn.welearn.model.Schedule;
 import uni.ruse.welearn.welearn.model.User;
 import uni.ruse.welearn.welearn.repository.ResourceRepository;
 import uni.ruse.welearn.welearn.util.JwtTokenUtil;
@@ -40,20 +40,20 @@ public class ResourceService {
     private final JwtTokenUtil jwtTokenUtil;
     private final UserService userService;
     private final DisciplineService disciplineService;
-    private final ScheduleService scheduleService;
+    private final EventService eventService;
 
     public ResourceService(
             ResourceRepository resourceRepository,
             JwtTokenUtil jwtTokenUtil,
             UserService userService,
             DisciplineService disciplineService,
-            ScheduleService scheduleService
+            EventService eventService
     ) {
         this.resourceRepository = resourceRepository;
         this.jwtTokenUtil = jwtTokenUtil;
         this.userService = userService;
         this.disciplineService = disciplineService;
-        this.scheduleService = scheduleService;
+        this.eventService = eventService;
 
         File dataDirectory = new File(Paths.get("/data/").toString());
         if (!dataDirectory.exists()) {
@@ -79,10 +79,10 @@ public class ResourceService {
         return resourceRepository.findAll();
     }
 
-    public Resource save(MultipartFile file, Group group, String disciplineId, String scheduleId, Boolean accessibleAll) throws WeLearnException {
+    public Resource save(MultipartFile file, Group group, String disciplineId, String eventId, Boolean accessibleAll) throws WeLearnException {
         String fileName = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
         Discipline discipline = !disciplineId.equals(MISSING) ? disciplineService.getDisciplineById(disciplineId) : null;
-        Schedule schedule = !scheduleId.equals(MISSING) ? scheduleService.findById(scheduleId) : null;
+        Event event = !eventId.equals(MISSING) ? eventService.findById(eventId) : null;
         Path path = Paths.get("/data/resources/");
         resourceRepository.findByDirPath(path.toString()).forEach(it -> {
             log.info("Deleting hanging resource with id " + it.getResourceId());
@@ -95,7 +95,7 @@ public class ResourceService {
                         .group(group)
                         .type(file.getContentType())
                         .discipline(discipline)
-                        .schedule(schedule)
+                        .event(event)
                         .dirPath(path.toString())
                         .build()
         );
@@ -133,11 +133,11 @@ public class ResourceService {
 
     public Resource edit(MultipartFile file, Group group, String disciplineId, String scheduleId, String resourceId, Boolean accessibleAll) throws WeLearnException {
         Discipline discipline = !disciplineId.equals(MISSING) ? disciplineService.getDisciplineById(disciplineId) : null;
-        Schedule schedule = !scheduleId.equals(MISSING) ? scheduleService.findById(scheduleId) : null;
+        Event event = !scheduleId.equals(MISSING) ? eventService.findById(scheduleId) : null;
         Resource existingResource = findById(resourceId);
         validateGroup(group, existingResource);
         existingResource.setDiscipline(discipline);
-        existingResource.setSchedule(schedule);
+        existingResource.setEvent(event);
         existingResource.setName(StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename())));
         existingResource.setAccessibleAll(accessibleAll);
         editFile(file, existingResource);
@@ -191,6 +191,9 @@ public class ResourceService {
         var ref = new Object() {
             org.springframework.core.io.Resource foundResource = null;
         };
+        if(user.getRole().getRole().equals("administrator")){
+            ref.foundResource = getUrlResource(resource);
+        }
         if(user.getAssistedDiscipline() != null && resource.getDiscipline() != null) {
             user.getAssistedDiscipline().forEach(it -> {
                 if (it.getId().equals(resource.getDiscipline().getId())) {
@@ -214,17 +217,21 @@ public class ResourceService {
         if(user.getGroup() != null && resource.getDiscipline() != null) {
             user.getGroup().getDisciplines().forEach(it -> {
                 if (it.getId().equals(resource.getDiscipline().getId()) && ref.foundResource == null) {
-                    try {
-                        ref.foundResource = getUrlResource(resource);
-                    } catch (WeLearnException ignored) {
+                    if(!resource.getAccessibleAll() && user.getRole().getRole().equals("teacher")) {
+                        try {
+                            ref.foundResource = getUrlResource(resource);
+                        } catch (WeLearnException ignored) {
 
+                        }
                     }
                 }
             });
         }
         if(user.getGroup() != null && resource.getGroup() != null) {
             if (user.getGroup().getGroupId().equals(resource.getGroup().getGroupId())) {
-                ref.foundResource = getUrlResource(resource);
+                if(!resource.getAccessibleAll() && user.getRole().getRole().equals("teacher")) {
+                    ref.foundResource = getUrlResource(resource);
+                }
             }
         }
         if (ref.foundResource != null) {

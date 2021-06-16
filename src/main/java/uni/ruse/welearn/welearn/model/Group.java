@@ -105,7 +105,7 @@ public class Group extends AuditedClass {
             if (groupDto.getResources() != null) {
                 resources = groupDto.getResources().stream().map(it -> {
                     try {
-                        return new Resource(it, scheduleService, disciplineService, groupService);
+                        return new Resource(it, eventService, disciplineService, groupService);
                     } catch (WeLearnException e) {
                         e.printStackTrace();
                     }

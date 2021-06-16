@@ -28,7 +28,6 @@ public class ResourceDto {
     @Pattern(regexp = "^[a-zA-Z0-9-_.\\s]*$", message = "File name my contain only letters, numbers, dash, underscore and dot")
     private String name;
     @NotBlank(message = "Type is mandatory")
-    @Pattern(regexp = "^(doc)|(docx)|(pdf)|(png)|(jpeg)|(jpg)|(xlsx)|(xls)|(csv)|(ods)|(txt)$", message = "Type is invalid")
     private String type;
     @NotBlank(message = "Dir path is mandatory")
     private String dirPath;
@@ -36,7 +35,7 @@ public class ResourceDto {
     private Boolean accessibleAll;
     private String groupId;
     private String disciplineId;
-    private String scheduleId;
+    private String eventId;
 
     public ResourceDto(Resource resource) {
         if (resource != null) {
@@ -47,8 +46,8 @@ public class ResourceDto {
             if (resource.getDiscipline() != null) {
                 disciplineId = resource.getDiscipline().getId();
             }
-            if (resource.getSchedule() != null) {
-                scheduleId = resource.getSchedule().getId();
+            if (resource.getEvent() != null) {
+                eventId = resource.getEvent().getEventId();
             }
         }
     }

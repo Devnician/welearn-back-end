@@ -8,7 +8,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.beans.BeanUtils;
-import uni.ruse.welearn.welearn.model.Resource;
 import uni.ruse.welearn.welearn.model.Schedule;
 import uni.ruse.welearn.welearn.util.TimeDeserializer;
 
@@ -16,8 +15,6 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.sql.Time;
 import java.sql.Timestamp;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
  * @author ivelin.dimitrov
@@ -39,7 +36,6 @@ public class ScheduleDto {
     private String groupId;
     @NotBlank(message = "Discipline is mandatory")
     private String disciplineId;
-    private Set<String> resourceIds;
     @NotNull(message = "Days is mandatory")
     private String dayOfWeek;
     @NotNull(message = "start date is mandatory")
@@ -57,9 +53,6 @@ public class ScheduleDto {
             }
             if (schedule.getDiscipline() != null) {
                 disciplineId = schedule.getDiscipline().getId();
-            }
-            if (schedule.getResources() != null) {
-                resourceIds = schedule.getResources().stream().map(Resource::getResourceId).collect(Collectors.toSet());
             }
         }
     }

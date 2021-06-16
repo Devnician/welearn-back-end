@@ -79,10 +79,6 @@ public class Schedule extends AuditedClass {
     @NotNull(message = "Discipline is mandatory")
     private Discipline discipline;
 
-    @OneToMany(mappedBy = "schedule", fetch = FetchType.LAZY)
-    @LazyCollection(LazyCollectionOption.FALSE)
-    @JsonManagedReference
-    private Set<Resource> resources;
 
     public Schedule(
             ScheduleDto scheduleDto,
@@ -97,16 +93,6 @@ public class Schedule extends AuditedClass {
             }
             if (scheduleDto.getDisciplineId() != null) {
                 discipline = disciplineService.getDisciplineById(scheduleDto.getDisciplineId());
-            }
-            if (scheduleDto.getResourceIds() != null) {
-                resources = scheduleDto.getResourceIds().stream().map(id1 -> {
-                    try {
-                        return resourceService.findById(id1);
-                    } catch (WeLearnException e) {
-                        e.printStackTrace();
-                    }
-                    return null;
-                }).collect(Collectors.toSet());
             }
         }
     }

@@ -98,7 +98,8 @@ public class ScheduleService {
                             "Description",
                             foundGroup,
                             schedule.getDiscipline(),
-                            null
+                            null,
+                            schedule.getDiscipline().getResources()
                     );
                     eventService.saveWithoutEmail(newEvent);
                 }

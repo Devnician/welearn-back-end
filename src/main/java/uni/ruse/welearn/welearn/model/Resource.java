@@ -10,6 +10,7 @@ import org.hibernate.annotations.GenericGenerator;
 import org.springframework.beans.BeanUtils;
 import uni.ruse.welearn.welearn.model.dto.ResourceDto;
 import uni.ruse.welearn.welearn.service.DisciplineService;
+import uni.ruse.welearn.welearn.service.EventService;
 import uni.ruse.welearn.welearn.service.GroupService;
 import uni.ruse.welearn.welearn.service.ScheduleService;
 import uni.ruse.welearn.welearn.util.AuditedClass;
@@ -76,20 +77,20 @@ public class Resource extends AuditedClass {
     private Discipline discipline;
 
     @ManyToOne
-    @JoinColumn(name = "schedule_id")
+    @JoinColumn(name = "event_id")
     @JsonBackReference
-    private Schedule schedule;
+    private Event event;
 
     public Resource(
             ResourceDto resourceDto,
-            ScheduleService scheduleService,
+            EventService eventService,
             DisciplineService disciplineService,
             GroupService groupService
     ) throws WeLearnException {
         if (resourceDto != null) {
             BeanUtils.copyProperties(resourceDto, this);
-            if (resourceDto.getScheduleId() != null) {
-                schedule = scheduleService.findById(resourceDto.getScheduleId());
+            if (resourceDto.getEventId() != null) {
+                event = eventService.findById(resourceDto.getEventId());
             }
             if (resourceDto.getDisciplineId() != null) {
                 discipline = disciplineService.getDisciplineById(resourceDto.getDisciplineId());

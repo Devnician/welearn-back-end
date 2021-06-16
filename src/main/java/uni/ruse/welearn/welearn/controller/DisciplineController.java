@@ -80,7 +80,7 @@ public class DisciplineController {
     public ResponseEntity<Boolean> removeDiscipline(
             @PathVariable String disciplineId
     ) throws WeLearnException {
-        disciplineService.removeDiscipine(disciplineId);
+        disciplineService.removeDiscipline(disciplineId);
         return new ResponseEntity<>(true, HttpStatus.OK);
     }
 }

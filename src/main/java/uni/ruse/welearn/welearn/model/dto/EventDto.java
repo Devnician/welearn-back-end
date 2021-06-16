@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.beans.BeanUtils;
 import uni.ruse.welearn.welearn.model.Event;
+import uni.ruse.welearn.welearn.model.Resource;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -41,6 +42,7 @@ public class EventDto {
     private String groupId;
     private DisciplineDto discipline;
     private Set<UserDto> blacklist;
+    private Set<String> resourceIds;
 
     public EventDto(Event event) {
         if (event != null) {
@@ -53,6 +55,9 @@ public class EventDto {
             }
             if (event.getBlacklist() != null) {
                 blacklist = event.getBlacklist().stream().map(UserDto::new).collect(Collectors.toSet());
+            }
+            if (event.getResources() != null) {
+                resourceIds = event.getResources().stream().map(Resource::getResourceId).collect(Collectors.toSet());
             }
         }
     }

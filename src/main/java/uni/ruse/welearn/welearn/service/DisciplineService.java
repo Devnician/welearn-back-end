@@ -48,7 +48,7 @@ public class DisciplineService {
         return disciplineRepository.save(discipline);
     }
 
-    public void removeDiscipine(String disciplineId) throws WeLearnException {
+    public void removeDiscipline(String disciplineId) throws WeLearnException {
         disciplineRepository.delete(findOne(disciplineId));
     }
 }

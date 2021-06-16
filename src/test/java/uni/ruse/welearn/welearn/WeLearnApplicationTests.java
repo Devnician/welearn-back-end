@@ -549,7 +549,7 @@ class WeLearnApplicationTests {
         Group halvedGroup = getGroupFromRepo();
         halvedGroup.setDisciplines(null);
         groupService.edit(halvedGroup);
-        disciplineService.removeDiscipine(discipline.getId());
+        disciplineService.removeDiscipline(discipline.getId());
         userService.findAllUsers().forEach(user -> {
             try {
                 user.setGroup(null);

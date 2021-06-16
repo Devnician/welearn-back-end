@@ -84,12 +84,12 @@ public class ResourceController {
     public ResponseEntity<ResourceDto> save(
             @RequestParam("file") MultipartFile file,
             @RequestParam(value = "disciplineId", required = false, defaultValue = "missing") String disciplineId,
-            @RequestParam(value = "scheduleId", required = false, defaultValue = "missing") String scheduleId,
+            @RequestParam(value = "eventId", required = false, defaultValue = "missing") String eventId,
             @RequestParam(value = "accessibleAll", required = false, defaultValue = "true") Boolean accessibleAll,
             HttpServletRequest req
     ) throws WeLearnException {
-        checkOnlyOneOptionalParam(disciplineId, scheduleId);
-        return new ResponseEntity<>(new ResourceDto(resourceService.save(file, getGroupFromRequest(req), disciplineId, scheduleId, accessibleAll)
+        checkOnlyOneOptionalParam(disciplineId, eventId);
+        return new ResponseEntity<>(new ResourceDto(resourceService.save(file, getGroupFromRequest(req), disciplineId, eventId, accessibleAll)
         ), HttpStatus.OK);
     }
 
@@ -108,13 +108,13 @@ public class ResourceController {
     public ResponseEntity<ResourceDto> edit(
             @RequestParam("file") MultipartFile file,
             @RequestParam(value = "disciplineId", required = false, defaultValue = "missing") String disciplineId,
-            @RequestParam(value = "scheduleId", required = false, defaultValue = "missing") String scheduleId,
+            @RequestParam(value = "eventId", required = false, defaultValue = "missing") String eventId,
             @RequestParam(value = "accessibleAll", required = false, defaultValue = "true") Boolean accessibleAll,
             @RequestParam(value = "resourceId") String resourceId,
             HttpServletRequest req
     ) throws WeLearnException {
-        checkOnlyOneOptionalParam(disciplineId, scheduleId);
-        return new ResponseEntity<>(new ResourceDto(resourceService.edit(file, getGroupFromRequest(req), disciplineId, scheduleId, resourceId, accessibleAll)
+        checkOnlyOneOptionalParam(disciplineId, eventId);
+        return new ResponseEntity<>(new ResourceDto(resourceService.edit(file, getGroupFromRequest(req), disciplineId, eventId, resourceId, accessibleAll)
         ), HttpStatus.OK);
     }
 
