@@ -29,7 +29,7 @@ public class ResourceDto {
     private String name;
     @NotBlank(message = "Type is mandatory")
     private String type;
-    @NotBlank(message = "Dir path is mandatory")
+//    @NotBlank(message = "Dir path is mandatory")
     private String dirPath;
     @NotNull(message = "AccessibleAll is mandatory")
     private Boolean accessibleAll;

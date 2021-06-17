@@ -60,8 +60,8 @@ public class Resource extends AuditedClass {
             "(application/vnd.oasis.opendocument.spreadsheet)|" +
             "(text/plain)$", message = "Type is invalid")
     private String type;
-    @NotBlank(message = "Dir path is mandatory")
-    @Column(unique = true)
+//    @NotBlank(message = "Dir path is mandatory")
+//    @Column(unique = true)
     private String dirPath;
     @NotNull(message = "AccessibleAll is mandatory")
     private Boolean accessibleAll;

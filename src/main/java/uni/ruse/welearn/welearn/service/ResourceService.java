@@ -84,10 +84,10 @@ public class ResourceService {
         Discipline discipline = !disciplineId.equals(MISSING) ? disciplineService.getDisciplineById(disciplineId) : null;
         Event event = !eventId.equals(MISSING) ? eventService.findById(eventId) : null;
         Path path = Paths.get("/data/resources/");
-        resourceRepository.findByDirPath(path.toString()).forEach(it -> {
-            log.info("Deleting hanging resource with id " + it.getResourceId());
-            resourceRepository.delete(it);
-        });
+//        resourceRepository.findByDirPath(path.toString()).forEach(it -> {
+//            log.info("Deleting hanging resource with id " + it.getResourceId());
+//            resourceRepository.delete(it);
+//        });
         Resource resource = resourceRepository.save(
                 Resource.builder()
                         .name(fileName)
