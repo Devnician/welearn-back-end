@@ -36,7 +36,7 @@ public class EvaluationMarkService {
     }
 
     public EvaluationMark save(EvaluationMark evaluationMark) throws WeLearnException {
-        if (evaluationMark.getId() == null) {
+        if (evaluationMark.getId() == null || evaluationMark.getId().isBlank()) {
             return evaluationMarkRepository.save(evaluationMark);
         }
         throw new WeLearnException("New EvaluationMark object cannot have an id");
