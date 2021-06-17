@@ -25,7 +25,7 @@ import java.math.BigDecimal;
 @Builder
 public class EvaluationMarkDto {
     private String id;
-    @NotNull(message = "Mark Value is mandatory")
+//    @NotNull(message = "Mark Value is mandatory")
     @DecimalMin(value = "2.0", message = "Mark value may not be lower than 2.0")
     @DecimalMax(value = "6.0", message = "Mark value may not be higher than 6.0")
     @Digits(integer=1, fraction=2)
