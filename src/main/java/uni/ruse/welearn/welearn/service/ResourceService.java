@@ -217,21 +217,17 @@ public class ResourceService {
         if(user.getGroup() != null && resource.getDiscipline() != null) {
             user.getGroup().getDisciplines().forEach(it -> {
                 if (it.getId().equals(resource.getDiscipline().getId()) && ref.foundResource == null) {
-                    if(!resource.getAccessibleAll() && user.getRole().getRole().equals("teacher")) {
                         try {
                             ref.foundResource = getUrlResource(resource);
                         } catch (WeLearnException ignored) {
 
                         }
-                    }
                 }
             });
         }
         if(user.getGroup() != null && resource.getGroup() != null) {
             if (user.getGroup().getGroupId().equals(resource.getGroup().getGroupId())) {
-                if(!resource.getAccessibleAll() && user.getRole().getRole().equals("teacher")) {
                     ref.foundResource = getUrlResource(resource);
-                }
             }
         }
 
