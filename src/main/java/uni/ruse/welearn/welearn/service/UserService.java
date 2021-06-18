@@ -175,6 +175,48 @@ public class UserService implements UserDetailsService {
         return existingUser;
     }
 
+    public User updateUserWithoutPassword(User user) throws WeLearnException {
+        User existingUser = findUserById(user.getUserId());
+        if (existingUser != null) {
+            if (!user.getEmail().isBlank()) {
+                existingUser.setEmail(user.getEmail());
+            }
+            if (!user.getAddress().isBlank()) {
+                existingUser.setAddress(user.getAddress());
+            }
+            if (user.getBirthdate() != null) {
+                existingUser.setBirthdate(user.getBirthdate());
+            }
+            if (!user.getPhoneNumber().isBlank()) {
+                existingUser.setPhoneNumber(user.getPhoneNumber());
+            }
+            if (user.getRole() != null) {
+                Optional<Role> role = roleRepository.findById(user.getRole().getId());
+                if (role.isEmpty()) {
+                    throw new WeLearnException("Role not found");
+                } else {
+                    existingUser.setRole(role.get());
+                }
+            }
+            if (user.getGroup() != null) {
+                Group existingGroup = groupService.findOne(user.getGroup().getGroupId());
+                existingUser.setGroup(existingGroup);
+            }
+            if (user.getFirstName() != null) {
+                existingUser.setFirstName(user.getFirstName());
+            }
+            if (user.getMiddleName() != null) {
+                existingUser.setMiddleName(user.getMiddleName());
+            }
+            if (user.getLastName() != null) {
+                existingUser.setLastName(user.getLastName());
+            }
+
+            existingUser = userRepository.save(existingUser);
+        }
+        return existingUser;
+    }
+
     /**
      * Adds {@link User} and builds response for frontend
      *

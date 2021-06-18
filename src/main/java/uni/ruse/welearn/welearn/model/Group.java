@@ -165,7 +165,6 @@ public class Group extends AuditedClass {
             EventService eventService
     ) throws WeLearnException {
         User student = userService.findUserById(groupIdDto.getStudentId());
-        student.setPassword(null);
         Group group = groupService.findOne(groupIdDto.getGroupId());
         BeanUtils.copyProperties(group, this);
         if (groupIdDto.isRemove()) {
@@ -175,6 +174,6 @@ public class Group extends AuditedClass {
             student.setGroup(group);
             users.add(student);
         }
-        userService.updateUser(student);
+        userService.updateUserWithoutPassword(student);
     }
 }
