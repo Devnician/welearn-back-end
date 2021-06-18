@@ -1,0 +1,27 @@
+version: "3.3"
+
+networks:
+  welearn_network:
+    driver: "bridge"
+
+services:
+  mailserver:
+    container_name: mailhog
+    image: mailhog/mailhog
+    ports:
+      - 1025:1025
+      - 8025:8025
+
+  mariadb:
+    container_name: mariadb
+    image: mariadb:10.4
+    networks:
+      - "welearn_network"
+    environment:
+      - "MYSQL_USER=welearn"
+      - "MYSQL_PASSWORD=welearn"
+      - "MYSQL_ROOT_PASSWORD=welearn"
+      - "MYSQL_DATABASE=welearn"
+    ports:
+      - "3307:3306"
+    restart: always

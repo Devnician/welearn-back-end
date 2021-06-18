@@ -1,0 +1,53 @@
+server:
+  port: 7080
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+
+spring:
+  mail:
+    host: localhost
+    port: 1025
+    username: admin@welearn.bg
+    password: admin
+    protocol: smtp
+    properties:
+      "mail.transport.protocol": smtp
+      "mail.smtp.auth": true
+      "mail.smtp.starttls.enable": true
+  main:
+    allow-bean-definition-overriding: true
+  profiles:
+    active: 'test'
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+  servlet:
+    multipart:
+      max-file-size: "12MB"
+      max-request-size: "12MB"
+  datasource:
+    url: "jdbc:h2:mem:testdb"
+    username: "sa"
+    password: "password"
+    driver-class-name: org.h2.Driver
+  flyway:
+    enabled: false
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: false
+    properties:
+      hibernate:
+        jdbc:
+          batch_size: "30"
+        order_inserts: "true"
+        order_updates: "true"
+        show_sql: false
+        temp:
+          use_jdbc_metadata_defaults: false
+        dialect: org.hibernate.dialect.H2Dialect

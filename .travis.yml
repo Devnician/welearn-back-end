@@ -1,0 +1,20 @@
+language: java
+
+if: type = pull_request OR branch = develop OR branch = main OR tag IS present
+
+script: mvn package -DskipTests
+
+before_deploy:
+  - docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+  - docker build -t welearn-backend .
+  - docker images
+  - docker tag welearn-backend $DOCKER_USERNAME/welearn-backend
+  - docker push $DOCKER_USERNAME/welearn-backend
+
+deploy:
+  - provider: script
+    skip_existing: true
+    skip_cleanup: true
+    script: echo "DONE!"
+    on:
+      branch: develop

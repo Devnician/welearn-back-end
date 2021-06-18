@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <springProfile name="prod">
+        <include resource="org/springframework/boot/logging/logback/base.xml"/>
+        <appender name="ELASTIC" class="com.internetitem.logback.elasticsearch.ElasticsearchAppender">
+            <url>http://es01:9200/_bulk</url>
+            <index>welearn-logs-%date{yyyy-MM-dd}</index>
+            <type>tester</type>
+            <loggerName>es-logger</loggerName> <!-- optional -->
+            <errorLoggerName>es-error-logger</errorLoggerName> <!-- optional -->
+            <connectTimeout>30000</connectTimeout> <!-- optional (in ms, default 30000) -->
+            <errorsToStderr>false</errorsToStderr> <!-- optional (default false) -->
+            <includeCallerData>false</includeCallerData> <!-- optional (default false) -->
+            <logsToStderr>false</logsToStderr> <!-- optional (default false) -->
+            <maxQueueSize>104857600</maxQueueSize> <!-- optional (default 104857600) -->
+            <maxRetries>3</maxRetries> <!-- optional (default 3) -->
+            <readTimeout>30000</readTimeout> <!-- optional (in ms, default 30000) -->
+            <sleepTime>250</sleepTime> <!-- optional (in ms, default 250) -->
+            <rawJsonMessage>false</rawJsonMessage> <!-- optional (default false) -->
+            <includeMdc>false</includeMdc> <!-- optional (default false) -->
+            <properties>
+                <property>
+                    <name>host</name>
+                    <value>${HOSTNAME}</value>
+                    <allowEmpty>false</allowEmpty>
+                </property>
+                <property>
+                    <name>severity</name>
+                    <value>%level</value>
+                </property>
+                <property>
+                    <name>thread</name>
+                    <value>%thread</value>
+                </property>
+                <property>
+                    <name>stacktrace</name>
+                    <value>%ex</value>
+                </property>
+                <property>
+                    <name>logger</name>
+                    <value>%logger</value>
+                </property>
+            </properties>
+            <headers>
+                <header>
+                    <name>Content-Type</name>
+                    <value>application/json</value>
+                </header>
+            </headers>
+        </appender>
+        <logger name="es-logger" level="INFO" additivity="false">
+        <appender name="ES_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+            <!-- ... -->
+            <encoder>
+                <pattern>%msg
+                </pattern> <!-- This pattern is important, otherwise it won't be the raw Elasticsearch format anyomre -->
+            </encoder>
+        </appender>
+        </logger>
+        <root level="info">
+            <appender-ref ref="ELASTIC" />
+        </root>
+    </springProfile>
+        <springProfile name="local,docker,test">
+            <include resource="org/springframework/boot/logging/logback/base.xml"/>
+            <logger name="guru.springframework.controllers" level="WARN" additivity="false">
+                <appender-ref ref="CONSOLE"/>
+                <appender-ref ref="FILE"/>
+            </logger>
+            <logger name="guru.springframework.helpers" level="WARN" additivity="false">
+                <appender-ref ref="CONSOLE"/>
+                <appender-ref ref="FILE"/>
+            </logger>
+        </springProfile>
+</configuration>

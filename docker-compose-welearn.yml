@@ -1,0 +1,46 @@
+version: "3.3"
+
+networks:
+  welearn_network:
+    driver: "bridge"
+
+services:
+  mariadb:
+    container_name: mariadb
+    image: mariadb:10.4
+    networks:
+      - "welearn_network"
+    environment:
+      - "MYSQL_USER=welearn"
+      - "MYSQL_PASSWORD=welearn"
+      - "MYSQL_ROOT_PASSWORD=welearn"
+      - "MYSQL_DATABASE=welearn"
+    ports:
+      - "3306:3306"
+    restart: always
+    healthcheck:
+      test: [ "CMD", "mysqladmin" ,"ping", "-h", "localhost" ]
+      interval: 5s
+      timeout: 3s
+      retries: 8
+
+  welearn:
+    container_name: welearn
+    image: test1996/welearn-backend
+    networks:
+      - "welearn_network"
+    ports:
+      - "8080:8080"
+    restart: on-failure
+    entrypoint: java -Dspring.profiles.active=docker -jar welearn.jar
+    depends_on:
+      mariadb:
+        condition: service_healthy
+    volumes:
+      - ./data:/data
+#      - ./config:/config
+#    healthcheck:
+#      test: [ "CMD", "curl", "-sL", "http://welearn:8080/actuator/health" ]
+#      interval: 1m
+#      timeout: 5s
+#      retries: 10
